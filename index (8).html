@@ -1,0 +1,1736 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payboss Cafe - Menu Pelanggan</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8B4513 0%, #D2B48C 100%);
+            min-height: 100%;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            background: rgba(62, 39, 35, 0.95);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-brand {
+            color: #D2B48C;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        /* Menu Page Styles */
+        .menu-slider-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .menu-slider {
+            display: flex;
+            width: 100%;
+            /* Lebar diatur oleh JS */
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .menu-slide {
+            width: 100%;
+            /* Lebar diatur oleh JS */
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            /* Penting untuk slider */
+        }
+
+        .slide-image {
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(135deg, #8B4513 0%, #D2B48C 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        .slide-image .emoji {
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            font-size: 8rem; /* Ukuran emoji tetap di sini */
+        }
+        
+        /* --- CSS BARU UNTUK GAMBAR MENU --- */
+        .slide-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Membuat gambar pas tanpa penyok */
+            position: relative;
+            z-index: 2;
+        }
+        /* --- AKHIR CSS BARU --- */
+
+        .slide-sold-out {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            text-transform: uppercase;
+        }
+
+        .slide-content {
+            height: 40%;
+            background: white;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            box-sizing: border-box; /* Pastikan padding tidak merusak layout */
+        }
+
+        .slide-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #3E2723;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .slide-description {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .slide-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #8B4513;
+            margin-bottom: 25px;
+            text-shadow: 0 2px 4px rgba(139, 69, 19, 0.2);
+        }
+
+        .slide-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .slide-nav:hover {
+            background: white;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .slide-nav.prev {
+            left: 30px;
+        }
+
+        .slide-nav.next {
+        right: 30px;
+    }
+
+    .slide-indicators {
+        position: absolute;
+        bottom: calc(40% + 20px); /* DIUBAH: Pindah ke atas kotak konten */
+        left: 50%;
+        transform: translateX(-50%);
+            display: none; /* DIUBAH: Indikator dihilangkan */
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .slide-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+        }
+
+        .slide-indicator.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        .category-selector {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 25px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            overflow-x: auto; /* Untuk mobile */
+            max-width: 90%;
+        }
+
+        .category-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .category-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .category-btn.active {
+            background: #8B4513;
+            color: white;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.4);
+        }
+
+        .slide-variants {
+            background: rgba(139, 69, 19, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-size: 1rem;
+            color: #8B4513;
+            font-weight: bold;
+        }
+
+        .order-slide-btn {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+            margin-top: auto;
+        }
+        
+        .order-slide-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .order-slide-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #8B4513;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 2000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .category-selector {
+                gap: 8px;
+                padding: 10px 15px;
+            }
+            .category-btn {
+                padding: 8px 15px;
+                font-size: 0.8rem;
+            }
+            .slide-nav {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+            .slide-nav.prev { left: 15px; }
+            .slide-nav.next { right: 15px; }
+            .slide-title { font-size: 2rem; }
+            .slide-description { font-size: 1rem; }
+            .slide-price { font-size: 1.5rem; }
+            .order-slide-btn { font-size: 1rem; padding: 12px 30px; }
+            .slide-image { height: 50%; }
+            .slide-content { height: 50%; padding: 20px; }
+        }
+
+        /* Cart Styles */
+        .cart-toggle {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background: #8B4513;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 999;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            width: 60px;
+            height: 60px;
+            display: flex; /* Diubah dari none */
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .cart-toggle:hover {
+            background: #A0522D;
+            transform: scale(1.05);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .cart-sidebar {
+            position: fixed;
+            right: -100%;
+            top: 0;
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1500;
+            display: flex;
+            flex-direction: column; /* Agar footer menempel di bawah */
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            background: #8B4513;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1501;
+            flex-shrink: 0;
+        }
+
+        .cart-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .cart-items {
+            padding: 20px;
+            overflow-y: auto;
+            flex-grow: 1; /* Membuat daftar item memanjang */
+            min-height: 100px; /* Tinggi minimum agar tidak kolaps */
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item-info {
+            flex: 1;
+            margin-right: 15px;
+        }
+
+        .cart-item-name {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: #3E2723;
+        }
+
+        .cart-item-variant {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-details {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .cart-item-price {
+            font-weight: bold;
+            color: #8B4513;
+            font-size: 1rem;
+        }
+
+        .remove-item {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .remove-item:hover {
+            background: #c82333;
+        }
+
+        .cart-total {
+            padding: 20px;
+            border-top: 2px solid #8B4513;
+            background: #f8f9fa;
+            position: sticky;
+            bottom: 0;
+            flex-shrink: 0;
+        }
+
+        .total-breakdown {
+            margin-bottom: 20px;
+        }
+
+        .total-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .total-line.final {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #8B4513;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+
+        .checkout-btn {
+            background: #8B4513;
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .checkout-btn:hover:not(:disabled) {
+            background: #A0522D;
+        }
+
+        .checkout-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+            box-sizing: border-box;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: #3E2723;
+            font-size: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #3E2723;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #8B4513;
+        }
+
+        .payment-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .payment-option {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .payment-option:hover {
+            border-color: #8B4513;
+            background: #fff;
+        }
+
+        .payment-option.selected {
+            border-color: #8B4513;
+            background: #fff;
+            box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.2);
+        }
+
+        .payment-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .qr-code {
+            width: 250px; /* Ukuran Diperbesar */
+            height: 250px; /* Ukuran Diperbesar */
+            background: #f0f0f0;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #8B4513;
+            border-radius: 10px;
+            flex-direction: column;
+            overflow: hidden; /* Pastikan gambar pas */
+        }
+        
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .receipt-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .receipt-info h4 {
+            margin: 0 0 15px 0;
+            color: #3E2723;
+            text-align: center;
+        }
+
+        .receipt-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .receipt-line.total {
+            font-weight: bold;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 10px;
+            color: #8B4513;
+            font-size: 1.1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+        }
+        
+        /* Quantity Controls */
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .qty-btn {
+            background: #8B4513;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+            line-height: 1;
+        }
+
+        .qty-btn:hover {
+            background: #A0522D;
+        }
+
+        .qty-display {
+            font-weight: bold;
+            font-size: 1.5rem;
+            min-width: 40px;
+            text-align: center;
+            color: #3E2723;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <a href="#" class="nav-brand">☕ Payboss Cafe</a>
+    </nav>
+
+    <!-- Menu Page -->
+    <div id="menu-page">
+        <div class="menu-slider-container">
+            <!-- Category Selector -->
+            <div class="category-selector" id="category-selector">
+                <!-- Kategori dimuat oleh JS -->
+            </div>
+            <!-- Menu Slider -->
+            <div class="menu-slider" id="menu-slider">
+                <!-- Slides will be generated by JavaScript -->
+            </div>
+            <!-- Navigation Buttons -->
+            <button class="slide-nav prev" onclick="previousSlide()">‹</button>
+            <button class="slide-nav next" onclick="nextSlide()">›</button>
+            <!-- Slide Indicators -->
+            <div class="slide-indicators" id="slide-indicators">
+                <!-- Indicators will be generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Toggle Button -->
+    <button class="cart-toggle" id="cart-toggle" onclick="toggleCart()">
+        🛒
+        <span class="cart-count" id="cart-count">0</span>
+    </button>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>🛒 Keranjang Belanja</h3>
+            <button class="close-cart" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Item keranjang dimuat oleh JS -->
+        </div>
+        <div class="cart-total">
+            <div class="total-breakdown">
+                <div class="total-line">
+                    <span>Subtotal:</span>
+                    <span id="cart-subtotal">Rp 0</span>
+                </div>
+                <!-- [PERUBAHAN] Pajak dihilangkan dari tampilan -->
+                <div class="total-line" style="display: none;">
+                    <span>Pajak (10%):</span>
+                    <span id="cart-tax">Rp 0</span>
+                </div>
+                <div class="total-line final">
+                    <span>Total:</span>
+                    <span id="cart-total">Rp 0</span>
+                </div>
+            </div>
+            <button class="checkout-btn" onclick="showCheckout()" disabled>Checkout</button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="modal" id="checkout-modal">
+        <div class="modal-content">
+            <h3>📋 Informasi Pemesanan</h3>
+            <form id="checkout-form" onsubmit="processCheckout(event)">
+                <div class="form-group">
+                    <label for="customer-name">Nama Pelanggan:</label>
+                    <input type="text" id="customer-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="table-number">Nomor Meja:</label>
+                    <select id="table-number" required>
+                        <option value="">Pilih Meja</option>
+                        <option value="1">Meja 1</option>
+                        <option value="2">Meja 2</option>
+                        <option value="3">Meja 3</option>
+                        <option value="4">Meja 4</option>
+                        <option value="5">Meja 5</option>
+                        <option value="6">Meja 6</option>
+                        <option value="7">Meja 7</option>
+                        <option value="8">Meja 8</option>
+                        <option value="9">Meja 9</option>
+                        <option value="10">Meja 10</option>
+                        <option value="Take Away">Take Away</option>
+                    </select>
+                </div>
+                <!-- <div class="form-group">
+                    <label for="phone-number">Nomor WhatsApp (Opsional):</label>
+                    <input type="tel" id="phone-number" placeholder="08xxxxxxxxxx">
+                </div> -->
+                <div class="modal-buttons">
+                    <button type="submit" class="checkout-btn">Lanjut ke Pembayaran</button>
+                    <button type="button" class="btn-cancel" onclick="closeModal('checkout-modal')">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="payment-modal">
+        <div class="modal-content">
+            <h3>💳 Pilih Metode Pembayaran</h3>
+            <div class="receipt-info">
+                <h4>📋 Detail Pesanan</h4>
+                <div id="payment-items"></div>
+                <div class="receipt-line">
+                    <span>Subtotal:</span>
+                    <span id="payment-subtotal"></span>
+                </div>
+                <!-- [PERUBAHAN] Pajak dihilangkan dari tampilan -->
+                <div class="receipt-line" style="display: none;">
+                    <span>Pajak (10%):</span>
+                    <span id="payment-tax"></span>
+                </div>
+                <div class="receipt-line total">
+                    <span>Total Bayar:</span>
+                    <span id="payment-total"></span>
+                </div>
+            </div>
+            <div class="payment-options">
+                <div class="payment-option" onclick="selectPayment('qris')">
+                    <span class="payment-icon">📱</span>
+                    <div><strong>QRIS</strong></div>
+                    <div style="font-size: 0.9rem; color: #666;">Scan & Bayar</div>
+                </div>
+                <div class="payment-option" onclick="selectPayment('cash')">
+                    <span class="payment-icon">💵</span>
+                    <div><strong>Cash</strong></div>
+                    <div style="font-size: 0.9rem; color: #666;">Bayar Tunai</div>
+                </div>
+            </div>
+            <div id="qris-section" style="display: none;">
+                <p><strong>Scan QR Code untuk melakukan pembayaran</strong></p>
+                <div class="qr-code">
+                    <!-- GAMBAR QRIS KUSTOM ANDA -->
+                    <img src="https://i.imgur.com/Pc4W6zN.jpeg" alt="QRIS Payboss Cafe">
+                </div>
+            </div>
+            <div id="cash-section" style="display: none;">
+                <p><strong>Pembayaran Tunai</strong></p>
+                <p style="color: #666;">Silakan bayar di kasir dengan jumlah yang tertera di atas.</p>
+                <p style="color: #8B4513; font-weight: bold;">Pesanan akan diproses setelah pembayaran dikonfirmasi kasir.</p>
+            </div>
+            <div class="modal-buttons">
+                <button class="checkout-btn" id="confirm-payment-btn" onclick="confirmPayment()" style="display: none;">
+                    Konfirmasi Pembayaran
+                </button>
+                <button type="button" class="btn-cancel" onclick="closeModal('payment-modal')">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="success-modal">
+        <div class="modal-content">
+            <h3>✅ Pesanan Berhasil!</h3>
+            <div style="font-size: 4rem; margin: 20px 0;">🎉</div>
+            
+            <!-- Info Struk Baru (Mengikuti urutan gambar) -->
+            <div class="receipt-info" style="margin-top: 20px; text-align: left; background: #fff; padding: 0;"> <!-- Hapus background/padding default -->
+                
+                <h4 style="text-align: center; font-size: 1.2rem; color: #3E2723; margin-bottom: 15px;">Dine In Order</h4>
+
+                <div class="receipt-line" style="font-size: 0.9rem;">
+                    <span>Nama Pelanggan:</span>
+                    <strong id="success-customer"></strong>
+                </div>
+                <div class="receipt-line" style="font-size: 0.9rem;">
+                    <span>Tanggal:</span>
+                    <strong id="success-date" style="text-align: right;"></strong>
+                </div>
+                
+                <!-- ========================================================== -->
+                <!-- [--- PERUBAHAN 2: Baris HTML Baru Ditambahkan ---] -->
+                <!-- ========================================================== -->
+                <div class="receipt-line" style="font-size: 0.9rem;">
+                    <span>No. Antrian:</span>
+                    <strong id="success-queue-number" style="font-size: 1.1rem; color: #8B4513;"></strong>
+                </div>
+                <!-- ========================================================== -->
+
+                <div class="receipt-line" style="font-size: 0.9rem;">
+                    <span>Order ID:</span>
+                    <strong id="order-id" style="text-transform: uppercase;"></strong>
+                </div>
+                <div class="receipt-line" style="font-size: 0.9rem;">
+                    <span>Meja:</span>
+                    <strong id="success-table"></strong>
+                </div>
+
+                <hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">
+                
+                <!-- Judul "Order" dan Total Kuantitas -->
+                <div class="receipt-line" style="margin-bottom: 10px;">
+                    <strong style="color: #3E2723;">Order</strong>
+                    <strong style="color: #3E2723;">Total Order: <span id="success-total-items">0</span></strong>
+                </div>
+
+                <!-- Item Struk -->
+                <div id="success-receipt-items" style="padding-left: 10px;">
+                    <!-- Item akan diisi oleh JS -->
+                </div>
+                
+                <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
+                
+                <!-- Total Struk -->
+                <div class="receipt-line">
+                    <span>Sub Total</span>
+                    <span id="success-subtotal"></span>
+                </div>
+                <!-- [PERUBAHAN] Pajak dihilangkan dari tampilan -->
+                <div class="receipt-line" style="display: none;">
+                    <span>PPN 10%</span>
+                    <span id="success-tax"></span>
+                </div>
+                
+                <div class="receipt-line total" style="font-size: 1.2rem; margin-top: 10px;">
+                    <span>Total Payment</span>
+                    <span id="success-total"></span>
+                </div>
+                <div class="receipt-line" style="font-size: 0.9rem; margin-top: 5px;">
+                    <span>Payment Method</span>
+                    <span id="success-payment-method" style="text-transform: uppercase; font-weight: bold;"></span>
+                </div>
+            </div>
+            
+            <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin: 25px 0 20px 0;">
+                <p style="margin: 0; color: #155724; font-weight: 500;">
+                    Pesanan Anda sedang disiapkan. Silakan tunggu.
+                </p>
+            </div>
+            <button class="checkout-btn" onclick="closeModal('success-modal'); resetCart();">Tutup</button>
+        </div>
+    </div>
+    
+    <!-- --- MODAL BARU UNTUK OPSI ITEM --- -->
+    <div class="modal" id="item-options-modal">
+        <div class="modal-content">
+            <h3 id="modal-item-name">Nama Item</h3>
+            <p id="modal-item-description" style="color: #666; margin-top: -15px;">Deskripsi item.</p>
+
+            <!-- Pilihan Varian -->
+            <div class="form-group" id="modal-variant-group">
+                <label for="modal-item-variant">Pilih Varian:</label>
+                <select id="modal-item-variant">
+                    <!-- Opsi varian dimuat oleh JS -->
+                </select>
+            </div>
+            
+            <!-- Kontrol Kuantitas -->
+            <div class="quantity-controls">
+                <button class="qty-btn" id="modal-qty-minus" onclick="updateModalQuantity(-1)">-</button>
+                <span id="modal-qty-display" class="qty-display">1</span>
+                <button class="qty-btn" id="modal-qty-plus" onclick="updateModalQuantity(1)">+</button>
+            </div>
+            
+            <!-- Harga Total Modal -->
+            <div class="slide-price" id="modal-item-price" style="margin-bottom: 20px;">Rp 0</div>
+
+            <div class="modal-buttons">
+                <button class="checkout-btn" onclick="addItemFromModal()">Tambah ke Keranjang</button>
+                <button type="button" class="btn-cancel" onclick="closeModal('item-options-modal')">Batal</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="module">
+        // Import fungsi Firebase
+        // ==========================================================
+        // [--- PERUBAHAN 1: Menambahkan 'runTransaction' ---]
+        // ==========================================================
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, getDoc, Timestamp, query, orderBy, where, getDocs, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // --- KONFIGURASI FIREBASE ---
+        // (Pastikan ini sesuai dengan project Anda)
+        const firebaseConfig = {
+            apiKey: "AIzaSyB0nHqdAw_dV9pHcQ_cSnWtNsn4CwwwUNc",
+            authDomain: "payboss-cafe-system.firebaseapp.com",
+            projectId: "payboss-cafe-system",
+            storageBucket: "payboss-cafe-system.appspot.com",
+            messagingSenderId: "570523503793",
+            appId: "1:570523503793:web:0a7ba7ce751eb95a3f6690",
+            measurementId: "G-H1NJ369HE9"
+        };
+
+        // Inisialisasi Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- VARIABEL GLOBAL ---
+        let cart = [];
+        let selectedPaymentMethod = null;
+        let currentSlide = 0;
+        let currentCategory = ''; // Kategori yang sedang aktif
+        let allMenuItems = []; // Menyimpan semua item menu dari Firestore
+        let currentMenuItems = []; // Item menu yang sedang ditampilkan (hasil filter)
+        
+        // Variabel untuk modal opsi
+        let currentModalItem = null;
+        let currentModalQuantity = 1;
+
+        // --- INISIALISASI APLIKASI ---
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAppLogic();
+            setupSwipeAndKeyListeners(); // Tambahkan listener swipe & keyboard
+        });
+
+        function initializeAppLogic() {
+            // Listener untuk mengambil data menu dari Firestore
+            // Menggunakan koleksi 'menu'
+            const menuQuery = query(collection(db, 'menu'), orderBy('name'));
+            
+            onSnapshot(menuQuery, (snapshot) => {
+                allMenuItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                // Setelah data didapat, render kategori dan menu awal
+                renderCategoryButtons();
+                
+                // Set kategori pertama sebagai default jika belum ada
+                if (!currentCategory && allMenuItems.length > 0) {
+                    const firstCategory = allMenuItems[0].category || 'lainnya';
+                    switchCategory(firstCategory);
+                } else {
+                    // Jika kategori sudah ada, refresh data untuk kategori tsb
+                    switchCategory(currentCategory);
+                }
+                
+            }, (error) => {
+                console.error("Error mengambil data menu: ", error);
+                // Tampilkan pesan error jika gagal memuat menu
+                document.getElementById('menu-slider').innerHTML = '<div style="color:white; text-align:center; padding: 50px;">Gagal memuat menu. Periksa koneksi internet Anda.</div>';
+            });
+            
+            updateCartDisplay();
+        }
+
+        // --- FUNGSI KATEGORI & RENDER MENU ---
+
+        function renderCategoryButtons() {
+            const container = document.getElementById('category-selector');
+            if (!container) return;
+
+            // Dapatkan kategori unik dari semua item menu
+            const categories = [...new Set(allMenuItems.map(item => item.category || 'lainnya'))];
+            // Urutkan kategori
+            categories.sort(); 
+
+            container.innerHTML = ''; // Kosongkan tombol lama
+            
+            categories.forEach(category => {
+                const button = document.createElement('button');
+                button.className = 'category-btn';
+                button.dataset.category = category;
+                // Ubah nama 'lainnya' menjadi lebih ramah
+                button.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                
+                // Tambahkan emoji (opsional)
+                if(category === 'snacks') button.textContent = '🍟 ' + button.textContent;
+                if(category === 'Food') button.textContent = '🍛 ' + button.textContent;
+                if(category === 'pastry') button.textContent = '🥐 ' + button.textContent;
+                if(category === 'coffee') button.textContent = '☕ ' + button.textContent;
+                if(category === 'non-coffee') button.textContent = '🥤 ' + button.textContent;
+
+                button.onclick = () => switchCategory(category);
+                container.appendChild(button);
+            });
+            
+            // Set tombol aktif
+            updateActiveCategoryButton();
+        }
+        
+        function updateActiveCategoryButton() {
+             const categoryButtons = document.querySelectorAll('.category-btn');
+             categoryButtons.forEach(btn => {
+                if (btn.dataset.category === currentCategory) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        // Fungsi untuk beralih kategori
+        function switchCategory(category) {
+            currentCategory = category;
+            
+            // Filter menu berdasarkan kategori yang dipilih
+            currentMenuItems = allMenuItems.filter(item => (item.category || 'lainnya') === category);
+            currentSlide = 0; // Reset ke slide pertama
+            
+            renderMenuSlider(); // Render ulang slider
+            // updateSlideIndicators(); // DIHILANGKAN: Indikator tidak dipakai
+            updateActiveCategoryButton(); // Update tombol kategori aktif
+        }
+
+        // Render menu slider
+        function renderMenuSlider() {
+            const slider = document.getElementById('menu-slider');
+            if (!slider) return;
+
+            slider.innerHTML = ''; // Kosongkan slider
+
+            if (currentMenuItems.length === 0) {
+                 slider.innerHTML = `<div style="color:white; text-align:center; padding: 50px; width: 100%;">Tidak ada item di kategori ini.</div>`;
+                 slider.style.width = '100%';
+                 return;
+            }
+
+            // Set lebar slider berdasarkan jumlah item
+            slider.style.width = `${currentMenuItems.length * 100}%`;
+
+            currentMenuItems.forEach((item, index) => {
+                const slide = createMenuSlide(item, index);
+                // Set lebar setiap slide
+                slide.style.width = `${100 / currentMenuItems.length}%`;
+                slider.appendChild(slide);
+            });
+            
+            updateSliderPosition();
+        }
+
+        // Membuat satu slide menu
+        function createMenuSlide(item, index) {
+            const slide = document.createElement('div');
+            slide.className = 'menu-slide';
+            
+            // Cek ketersediaan, default 'true' jika field tidak ada
+            const isAvailable = item.isAvailable !== false;
+            
+            // --- LOGIKA BARU UNTUK GAMBAR ---
+            // Cek apakah ada item.imageUrl dan tidak kosong
+            let imageHtml = '';
+            if (item.imageUrl && item.imageUrl.trim() !== '') {
+                // Jika ada, gunakan tag <img>
+                imageHtml = `<img src="${item.imageUrl}" alt="${item.name}">`;
+            } else {
+                // Jika tidak ada, gunakan emoji seperti biasa
+                imageHtml = `<span class="emoji">${item.emoji || '🍽️'}</span>`;
+            }
+            // --- AKHIR LOGIKA BARU ---
+            
+            // Tampilkan varian jika ada
+            const variantsHtml = item.variants ?
+                `<div class="slide-variants"><strong>Varian:</strong> ${item.variants}</div>` : '';
+            
+            // Tampilkan overlay "HABIS" jika tidak tersedia
+            const soldOutHtml = !isAvailable ? 
+                `<div class="slide-sold-out">HABIS</div>` : '';
+
+            slide.innerHTML = `
+                <div class="slide-image">
+                    ${imageHtml} <!-- <-- VARIABEL BARU DIMASUKKAN DI SINI -->
+                    ${soldOutHtml}
+                </div>
+                <div class="slide-content">
+                    <div class="slide-title">${item.name}</div>
+                    <div class="slide-description">${item.description || ''}</div>
+                    ${variantsHtml}
+                    <div class="slide-price">Rp ${item.price.toLocaleString('id-ID')}</div>
+                    <button class="order-slide-btn" onclick="showItemOptions(${index})" ${!isAvailable ? 'disabled' : ''}>
+                        ${!isAvailable ? 'HABIS' : '🛒 Pesan Sekarang'}
+                    </button>
+                </div>
+            `;
+            
+            return slide;
+        }
+
+
+        // --- FUNGSI MODAL OPSI ITEM (BARU) ---
+
+        // Dibuat global agar bisa dipanggil dari HTML
+        window.showItemOptions = function(itemIndex) {
+            const item = currentMenuItems[itemIndex];
+            if (!item) return;
+
+            currentModalItem = item;
+            currentModalQuantity = 1;
+
+            // Isi info modal
+            document.getElementById('modal-item-name').textContent = item.name;
+            document.getElementById('modal-item-description').textContent = item.description || '';
+            
+            const variantGroup = document.getElementById('modal-variant-group');
+            const variantSelect = document.getElementById('modal-item-variant');
+            
+            // Cek jika ada varian
+            if (item.variants && item.variants.trim() !== '') {
+                variantGroup.style.display = 'block'; // Tampilkan pilihan varian
+                variantSelect.innerHTML = ''; // Kosongkan opsi lama
+                
+                const variants = item.variants.split(',').map(v => v.trim());
+                variants.forEach(variant => {
+                    const option = document.createElement('option');
+                    option.value = variant;
+                    option.textContent = variant;
+                    variantSelect.appendChild(option);
+                });
+            } else {
+                variantGroup.style.display = 'none'; // Sembunyikan pilihan varian
+                variantSelect.innerHTML = ''; // Kosongkan
+            }
+            
+            // Update tampilan kuantitas dan harga
+            updateModalPriceAndQuantity();
+
+            // Tampilkan modal
+            document.getElementById('item-options-modal').classList.add('active');
+        }
+        
+        window.updateModalQuantity = function(amount) {
+            currentModalQuantity += amount;
+            if (currentModalQuantity < 1) {
+                currentModalQuantity = 1; // Minimum 1
+            }
+            updateModalPriceAndQuantity();
+        }
+        
+        function updateModalPriceAndQuantity() {
+            document.getElementById('modal-qty-display').textContent = currentModalQuantity;
+            const totalPrice = (currentModalItem.price || 0) * currentModalQuantity;
+            document.getElementById('modal-item-price').textContent = `Rp ${totalPrice.toLocaleString('id-ID')}`;
+        }
+        
+        window.addItemFromModal = function() {
+            if (!currentModalItem) return;
+
+            const variantSelect = document.getElementById('modal-item-variant');
+            let selectedVariant = '';
+            
+            // Cek jika varian ada dan ditampilkan
+            if (currentModalItem.variants && currentModalItem.variants.trim() !== '') {
+                selectedVariant = variantSelect.value;
+            }
+
+            const itemName = currentModalItem.name;
+            const itemPrice = currentModalItem.price;
+            
+            // Buat kunci unik untuk keranjang (Nama + Varian)
+            const itemKey = selectedVariant ? `${itemName} (${selectedVariant})` : itemName;
+
+            // Cek jika item sudah ada di keranjang
+            const existingItem = cart.find(cartItem => cartItem.key === itemKey);
+
+            if (existingItem) {
+                // Jika ada, tambahkan kuantitasnya
+                existingItem.quantity += currentModalQuantity;
+            } else {
+                // Jika tidak, tambahkan item baru
+                cart.push({
+                    key: itemKey,
+                    name: itemName, // Simpan nama asli
+                    variant: selectedVariant, // Simpan varian
+                    price: itemPrice,
+                    quantity: currentModalQuantity
+                });
+            }
+
+            updateCartDisplay();
+            closeModal('item-options-modal');
+            showNotification(`${currentModalQuantity}x ${itemKey} ditambahkan ke keranjang!`);
+        }
+
+
+        // --- FUNGSI NAVIGASI SLIDER (DITAMBAHKAN KEMBALI) ---
+
+        window.updateSliderPosition = function() {
+            const slider = document.getElementById('menu-slider');
+            if (!slider || currentMenuItems.length === 0) return;
+            const translateX = -(currentSlide * (100 / currentMenuItems.length));
+            slider.style.transform = `translateX(${translateX}%)`;
+        }
+
+        window.updateSlideIndicators = function() {
+            /* DIHILANGKAN: Fungsi ini tidak diperlukan lagi
+            const indicatorsContainer = document.getElementById('slide-indicators');
+            if (!indicatorsContainer) return;
+            indicatorsContainer.innerHTML = '';
+            
+            currentMenuItems.forEach((_, index) => {
+                const indicator = document.createElement('div');
+                indicator.className = `slide-indicator ${index === currentSlide ? 'active' : ''}`;
+                indicator.onclick = () => goToSlide(index);
+                indicatorsContainer.appendChild(indicator);
+            });
+            */
+        }
+
+        window.nextSlide = function() {
+            if (currentMenuItems.length === 0) return;
+            if (currentSlide < currentMenuItems.length - 1) {
+                currentSlide++;
+            } else {
+                currentSlide = 0; // Kembali ke awal
+            }
+            updateSliderPosition();
+            // updateSlideIndicators(); // DIHILANGKAN: Indikator tidak dipakai
+        }
+
+        window.previousSlide = function() {
+            if (currentMenuItems.length === 0) return;
+            if (currentSlide > 0) {
+                currentSlide--;
+            } else {
+                currentSlide = currentMenuItems.length - 1; // Ke akhir
+            }
+            updateSliderPosition();
+            // updateSlideIndicators(); // DIHILANGKAN: Indikator tidak dipakai
+        }
+
+        window.goToSlide = function(index) {
+            currentSlide = index;
+            updateSliderPosition();
+            // updateSlideIndicators(); // DIHILANGKAN: Indikator tidak dipakai
+        }
+
+        function setupSwipeAndKeyListeners() {
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (document.getElementById('item-options-modal').classList.contains('active') ||
+                    document.getElementById('checkout-modal').classList.contains('active') ||
+                    document.getElementById('payment-modal').classList.contains('active') ||
+                    document.getElementById('success-modal').classList.contains('active')) {
+                    return; // Jangan navigasi jika modal terbuka
+                }
+                
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    previousSlide();
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    nextSlide();
+                }
+            });
+
+            // Touch/swipe support
+            let startX = 0;
+            let endX = 0;
+            const slider = document.getElementById('menu-slider');
+            
+            slider.addEventListener('touchstart', function(e) {
+                startX = e.touches[0].clientX;
+            }, { passive: true });
+            
+            slider.addEventListener('touchend', function(e) {
+                endX = e.changedTouches[0].clientX;
+                handleSwipe();
+            });
+            
+            function handleSwipe() {
+                const threshold = 50; // Jarak minimum swipe
+                const diff = startX - endX;
+                
+                if (Math.abs(diff) > threshold) {
+                    if (diff > 0) {
+                        nextSlide(); // Swipe ke kiri
+                    } else {
+                        previousSlide(); // Swipe ke kanan
+                    }
+                }
+            }
+        }
+
+
+        // --- FUNGSI KERANJANG (CART) ---
+
+        window.toggleCart = function() {
+            document.getElementById('cart-sidebar').classList.toggle('open');
+        }
+
+        function updateCartDisplay() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            const cartSubtotal = document.getElementById('cart-subtotal');
+            const cartTax = document.getElementById('cart-tax');
+            const cartTotal = document.getElementById('cart-total');
+            const checkoutBtn = document.querySelector('.checkout-btn');
+
+            if (!cartItemsContainer) return; // Exit jika elemen tidak ada
+
+            cartItemsContainer.innerHTML = '';
+            let subtotal = 0;
+            let itemCount = 0;
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div style="text-align: center; color: #666; padding: 40px 20px;">
+                        <div style="font-size: 3rem; margin-bottom: 15px;">🛒</div>
+                        <p>Keranjang masih kosong</p>
+                    </div>
+                `;
+                checkoutBtn.disabled = true;
+            } else {
+                cart.forEach((item, index) => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    itemCount += item.quantity;
+                    
+                    cartItemsContainer.innerHTML += `
+                        <div class="cart-item">
+                            <div class="cart-item-info">
+                                <div class="cart-item-name">${item.name}</div>
+                                ${item.variant ? `<div class="cart-item-variant">Varian: ${item.variant}</div>` : ''}
+                                <div class="cart-item-details">${item.quantity} x Rp ${item.price.toLocaleString('id-ID')}</div>
+                            </div>
+                            <div class="cart-item-actions">
+                                <div class="cart-item-price">Rp ${itemTotal.toLocaleString('id-ID')}</div>
+                                <button class="remove-item" onclick="removeFromCart(${index})">Hapus</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                checkoutBtn.disabled = false;
+            }
+
+            // [PERUBAHAN] Pajak diatur ke 0
+            const tax = 0; // Math.round(subtotal * 0.10); // Pajak 10%
+            const total = subtotal + tax;
+
+            cartCount.textContent = itemCount;
+            cartSubtotal.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+            cartTax.textContent = `Rp ${tax.toLocaleString('id-ID')}`;
+            cartTotal.textContent = `Rp ${total.toLocaleString('id-ID')}`;
+        }
+        
+        window.removeFromCart = function(index) {
+            const item = cart[index];
+            if (item) {
+                cart.splice(index, 1);
+                updateCartDisplay();
+                showNotification(`${item.key} dihapus dari keranjang.`);
+            }
+        }
+        
+        window.resetCart = function() {
+            cart = [];
+            selectedPaymentMethod = null;
+            updateCartDisplay();
+            document.getElementById('checkout-form').reset();
+            
+            // Reset modal payment
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.getElementById('qris-section').style.display = 'none';
+            document.getElementById('cash-section').style.display = 'none';
+            document.getElementById('confirm-payment-btn').style.display = 'none';
+            document.getElementById('confirm-payment-btn').disabled = false;
+        }
+
+
+        // --- FUNGSI CHECKOUT & PEMBAYARAN ---
+
+        window.showCheckout = function() {
+            if (cart.length === 0) {
+                showNotification('Keranjang masih kosong!', true);
+                return;
+            }
+            document.getElementById('checkout-modal').classList.add('active');
+        }
+
+        window.processCheckout = function(event) {
+            event.preventDefault();
+            
+            // Calculate totals
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            // [PERUBAHAN] Pajak diatur ke 0
+            const tax = 0; // Math.round(subtotal * 0.10);
+            const total = subtotal + tax;
+
+            // Update payment modal details
+            const paymentItems = document.getElementById('payment-items');
+            paymentItems.innerHTML = '';
+            cart.forEach(item => {
+                paymentItems.innerHTML += `
+                    <div class="receipt-line">
+                        <span>${item.key} x${item.quantity}</span>
+                        <span>Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</span>
+                    </div>
+                `;
+            });
+
+            document.getElementById('payment-subtotal').textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+            document.getElementById('payment-tax').textContent = `Rp ${tax.toLocaleString('id-ID')}`;
+            document.getElementById('payment-total').textContent = `Rp ${total.toLocaleString('id-ID')}`;
+
+            closeModal('checkout-modal');
+            document.getElementById('payment-modal').classList.add('active');
+        }
+
+        window.selectPayment = function(method) {
+            selectedPaymentMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.payment-option').forEach(option => option.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            document.getElementById('qris-section').style.display = method === 'qris' ? 'block' : 'none';
+            document.getElementById('cash-section').style.display = method === 'cash' ? 'block' : 'none';
+            document.getElementById('confirm-payment-btn').style.display = 'block';
+        }
+
+        // ==========================================================
+        // [--- PERUBAHAN 3: Fungsi confirmPayment() diganti seluruhnya ---]
+        // ==========================================================
+        window.confirmPayment = async function() {
+            if (!selectedPaymentMethod) {
+                showNotification('Pilih metode pembayaran terlebih dahulu!', true);
+                return;
+            }
+
+            const confirmBtn = document.getElementById('confirm-payment-btn');
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Memproses...';
+
+            // Ambil data dari form sebelumnya
+            const customerName = document.getElementById('customer-name').value;
+            const tableNumber = document.getElementById('table-number').value;
+
+            // Siapkan data pesanan dasar
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            // [PERUBAHAN] Pajak diatur ke 0
+            const tax = 0; // Math.round(subtotal * 0.10);
+            const total = subtotal + tax;
+            
+            const baseOrderData = {
+                customer: customerName,
+                table: tableNumber,
+                items: cart.map(item => ({
+                    name: item.name,
+                    variant: item.variant || null,
+                    qty: item.quantity,
+                    price: item.price
+                })),
+                subtotal: subtotal,
+                tax: tax, // Akan mengirim 0 ke Firebase
+                total: total,
+                status: 'pending', // Status awal: menunggu konfirmasi kasir
+                paymentMethod: selectedPaymentMethod,
+                createdAt: serverTimestamp() // Waktu pesanan dibuat
+            };
+
+            let newQueueNumber = 0;
+
+            try {
+                // --- AWAL LOGIKA TRANSAKSI ---
+                // 1. Tentukan referensi dokumen penghitung
+                const counterRef = doc(db, "counters", "dailyOrder");
+
+                // 2. Jalankan transaksi untuk mendapatkan nomor antrian
+                newQueueNumber = await runTransaction(db, async (transaction) => {
+                    const counterDoc = await transaction.get(counterRef);
+                    
+                    // Dapatkan tanggal hari ini (misal: "2025-11-09")
+                    const today = new Date().toISOString().split('T')[0];
+                    
+                    let newNumber;
+                    if (!counterDoc.exists() || counterDoc.data().lastResetDate !== today) {
+                        // Hari baru atau dokumen belum ada: Reset ke 1
+                        newNumber = 1;
+                        transaction.set(counterRef, {
+                            currentNumber: 1,
+                            lastResetDate: today
+                        });
+                    } else {
+                        // Hari yang sama: Tambah 1
+                        newNumber = counterDoc.data().currentNumber + 1;
+                        transaction.update(counterRef, {
+                            currentNumber: newNumber
+                        });
+                    }
+                    
+                    return newNumber;
+                });
+                // --- AKHIR LOGIKA TRANSAKSI ---
+
+                // 3. Gabungkan nomor antrian ke data pesanan
+                const finalOrderData = {
+                    ...baseOrderData,
+                    queueNumber: newQueueNumber // <-- FIELD BARU DITAMBAHKAN
+                };
+
+                // 4. Kirim pesanan ke koleksi 'orders'
+                const orderDoc = await addDoc(collection(db, "orders"), finalOrderData);
+                
+                // 5. Tampilkan modal sukses
+                // --- MULAI POPULASI STRUK SUKSES ---
+
+                const now = new Date();
+                const formattedDate = now.toLocaleString('id-ID', {
+                    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+
+                let totalItems = 0;
+                cart.forEach(item => { totalItems += item.quantity; });
+
+                // Tampilkan nomor antrian baru
+                document.getElementById('success-queue-number').textContent = `#${newQueueNumber}`;
+                document.getElementById('order-id').textContent = `#${orderDoc.id.substring(0, 10)}`;
+                document.getElementById('success-customer').textContent = customerName;
+                document.getElementById('success-table').textContent = `${tableNumber}`;
+                document.getElementById('success-date').textContent = formattedDate;
+                document.getElementById('success-total-items').textContent = totalItems;
+                
+                const successItemsContainer = document.getElementById('success-receipt-items');
+                successItemsContainer.innerHTML = '';
+                cart.forEach(item => {
+                    successItemsContainer.innerHTML += `
+                        <div class="receipt-line" style="font-size: 0.9rem;">
+                            <span>${item.quantity} x ${item.key}</span>
+                            <span>Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</span>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('success-subtotal').textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+                document.getElementById('success-tax').textContent = `Rp ${tax.toLocaleString('id-ID')}`; // Akan menampilkan Rp 0
+                document.getElementById('success-total').textContent = `Rp ${total.toLocaleString('id-ID')}`;
+                document.getElementById('success-payment-method').textContent = selectedPaymentMethod;
+                // --- AKHIR POPULASI STRUK SUKSES ---
+
+                closeModal('payment-modal');
+                document.getElementById('success-modal').classList.add('active');
+                
+                showNotification('Pesanan berhasil dikirim!');
+
+            } catch (error) {
+                console.error("Error mengirim pesanan atau transaksi: ", error);
+                showNotification('Gagal mengirim pesanan. Coba lagi.', true);
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'Konfirmasi Pembayaran';
+            }
+        }
+        // ==========================================================
+        // [--- AKHIR PERUBAHAN 3 ---]
+        // ==========================================================
+
+
+        // --- FUNGSI UTILITAS ---
+
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            
+            // Reset modal opsi jika ditutup
+            if (modalId === 'item-options-modal') {
+                currentModalItem = null;
+                currentModalQuantity = 1;
+            }
+        }
+
+        function showNotification(message, isError = false) {
+            const el = document.createElement('div');
+            el.className = 'notification';
+            el.textContent = message;
+            if (isError) el.style.backgroundColor = '#A52A2A';
+            document.body.appendChild(el);
+            setTimeout(() => el.classList.add('show'), 10);
+            setTimeout(() => {
+                el.classList.remove('show');
+                setTimeout(() => el.remove(), 500);
+            }, 3000);
+        }
+        
+    </script>
+</body>
+</html>
