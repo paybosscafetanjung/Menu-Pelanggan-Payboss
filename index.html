@@ -3,8 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payboss Cafe - Menu Pelanggan</title>
+<!-- ... (Kode <head> dan <style> Anda tidak berubah) ... -->
     <style>
         body {
             box-sizing: border-box;
@@ -764,7 +763,7 @@
 </head>
 
 <body>
-    <!-- Navigation -->
+<!-- ... (Kode <body> Anda tidak berubah) ... -->
     <nav class="nav-bar">
         <a href="#" class="nav-brand">☕ Payboss Cafe</a>
     </nav>
@@ -1009,7 +1008,8 @@
             <!-- Pilihan Varian -->
             <div class="form-group" id="modal-variant-group">
                 <label for="modal-item-variant">Pilih Varian:</label>
-                <select id="modal-item-variant">
+                <!-- PERUBAHAN: Menambahkan onchange event -->
+                <select id="modal-item-variant" onchange="updateModalPriceAndQuantity()">
                     <!-- Opsi varian dimuat oleh JS -->
                 </select>
             </div>
@@ -1188,6 +1188,9 @@
             updateSliderPosition();
         }
 
+        // ==========================================================
+        // [--- PERUBAHAN FUNGSI 1: createMenuSlide ---]
+        // ==========================================================
         // Membuat satu slide menu
         function createMenuSlide(item, index) {
             const slide = document.createElement('div');
@@ -1196,36 +1199,50 @@
             // Cek ketersediaan, default 'true' jika field tidak ada
             const isAvailable = item.isAvailable !== false;
             
-            // --- LOGIKA BARU UNTUK GAMBAR ---
-            // Cek apakah ada item.imageUrl dan tidak kosong
+            // --- LOGIKA GAMBAR ---
             let imageHtml = '';
             if (item.imageUrl && item.imageUrl.trim() !== '') {
-                // Jika ada, gunakan tag <img>
                 imageHtml = `<img src="${item.imageUrl}" alt="${item.name}">`;
             } else {
-                // Jika tidak ada, gunakan emoji seperti biasa
                 imageHtml = `<span class="emoji">${item.emoji || '🍽️'}</span>`;
             }
-            // --- AKHIR LOGIKA BARU ---
             
-            // Tampilkan varian jika ada
-            const variantsHtml = item.variants ?
-                `<div class="slide-variants"><strong>Varian:</strong> ${item.variants}</div>` : '';
+            // --- LOGIKA VARIAN LAMA (dihapus, diganti logika harga) ---
+            // const variantsHtml = item.variants ?
+            //     `<div class="slide-variants"><strong>Varian:</strong> ${item.variants}</div>` : '';
             
             // Tampilkan overlay "HABIS" jika tidak tersedia
             const soldOutHtml = !isAvailable ? 
                 `<div class="slide-sold-out">HABIS</div>` : '';
 
+            // --- LOGIKA HARGA BARU ---
+            let priceDisplayHtml = '';
+            // Cek apakah priceOptions ada DAN tidak kosong
+            if (item.priceOptions && item.priceOptions.length > 0) {
+                // Ambil harga pertama
+                const firstPrice = item.priceOptions[0].price;
+                // Cek jika ada lebih dari 1 harga, tambahkan "Mulai dari"
+                const pricePrefix = item.priceOptions.length > 1 ? 'Mulai dari ' : '';
+                priceDisplayHtml = `<div class="slide-price">${pricePrefix}Rp ${firstPrice.toLocaleString('id-ID')}</div>`;
+            } else if (item.price) { 
+                // Fallback jika Anda masih pakai data lama (item.price)
+                priceDisplayHtml = `<div class="slide-price">Rp ${item.price.toLocaleString('id-ID')}</div>`;
+            } else {
+                // Jika tidak ada data harga
+                priceDisplayHtml = `<div class="slide-price">Harga tidak tersedia</div>`;
+            }
+            // --- AKHIR LOGIKA HARGA BARU ---
+
             slide.innerHTML = `
                 <div class="slide-image">
-                    ${imageHtml} <!-- <-- VARIABEL BARU DIMASUKKAN DI SINI -->
+                    ${imageHtml}
                     ${soldOutHtml}
                 </div>
                 <div class="slide-content">
                     <div class="slide-title">${item.name}</div>
                     <div class="slide-description">${item.description || ''}</div>
-                    ${variantsHtml}
-                    <div class="slide-price">Rp ${item.price.toLocaleString('id-ID')}</div>
+                    <!-- Varian dihilangkan, diganti oleh priceOptions -->
+                    ${priceDisplayHtml} <!-- <-- MEMAKAI LOGIKA HARGA BARU -->
                     <button class="order-slide-btn" onclick="showItemOptions(${index})" ${!isAvailable ? 'disabled' : ''}>
                         ${!isAvailable ? 'HABIS' : '🛒 Pesan Sekarang'}
                     </button>
@@ -1238,6 +1255,9 @@
 
         // --- FUNGSI MODAL OPSI ITEM (BARU) ---
 
+        // ==========================================================
+        // [--- PERUBAHAN FUNGSI 2: showItemOptions ---]
+        // ==========================================================
         // Dibuat global agar bisa dipanggil dari HTML
         window.showItemOptions = function(itemIndex) {
             const item = currentMenuItems[itemIndex];
@@ -1253,24 +1273,28 @@
             const variantGroup = document.getElementById('modal-variant-group');
             const variantSelect = document.getElementById('modal-item-variant');
             
-            // Cek jika ada varian
-            if (item.variants && item.variants.trim() !== '') {
+            // Cek jika ada varian dari 'priceOptions'
+            // dan jika jumlahnya LEBIH DARI 1
+            if (item.priceOptions && item.priceOptions.length > 1) {
                 variantGroup.style.display = 'block'; // Tampilkan pilihan varian
                 variantSelect.innerHTML = ''; // Kosongkan opsi lama
                 
-                const variants = item.variants.split(',').map(v => v.trim());
-                variants.forEach(variant => {
-                    const option = document.createElement('option');
-                    option.value = variant;
-                    option.textContent = variant;
-                    variantSelect.appendChild(option);
+                // Isi <select> dengan data dari priceOptions
+                item.priceOptions.forEach(option => {
+                    const optionElement = document.createElement('option');
+                    // Format value: "NamaVarian|Harga" e.g., "Large|60000"
+                    // Ini cara mudah untuk mengambil harga & nama nanti.
+                    optionElement.value = `${option.name}|${option.price}`;
+                    optionElement.textContent = `${option.name} - Rp ${option.price.toLocaleString('id-ID')}`;
+                    variantSelect.appendChild(optionElement);
                 });
             } else {
-                variantGroup.style.display = 'none'; // Sembunyikan pilihan varian
+                // Sembunyikan jika hanya 1 harga (atau data lama)
+                variantGroup.style.display = 'none'; 
                 variantSelect.innerHTML = ''; // Kosongkan
             }
             
-            // Update tampilan kuantitas dan harga
+            // Update tampilan kuantitas dan harga (panggilan pertama)
             updateModalPriceAndQuantity();
 
             // Tampilkan modal
@@ -1285,28 +1309,75 @@
             updateModalPriceAndQuantity();
         }
         
-        function updateModalPriceAndQuantity() {
+        // ==========================================================
+        // [--- PERUBAHAN FUNGSI 3: updateModalPriceAndQuantity ---]
+        // ==========================================================
+        window.updateModalPriceAndQuantity = function() {
+            if (!currentModalItem) return; // Pengecekan keamanan
+
+            let selectedPrice = 0;
+            const variantSelect = document.getElementById('modal-item-variant');
+            
+            // Cek jika ada > 1 pilihan harga
+            if (currentModalItem.priceOptions && currentModalItem.priceOptions.length > 1) {
+                // Ada banyak pilihan, baca harga dari value <select>
+                const selectedValue = variantSelect.value; // cth: "Large|60000"
+                // Ambil bagian harganya
+                selectedPrice = parseFloat(selectedValue.split('|')[1]); 
+            } else if (currentModalItem.priceOptions && currentModalItem.priceOptions.length === 1) {
+                // Hanya ada satu pilihan harga
+                selectedPrice = currentModalItem.priceOptions[0].price;
+            } else if (currentModalItem.price) {
+                // Fallback untuk data lama (jika masih pakai item.price)
+                selectedPrice = currentModalItem.price;
+            }
+
+            // Update tampilan kuantitas
             document.getElementById('modal-qty-display').textContent = currentModalQuantity;
-            const totalPrice = (currentModalItem.price || 0) * currentModalQuantity;
+            
+            // Hitung total harga di modal
+            const totalPrice = (selectedPrice || 0) * currentModalQuantity;
+            
+            // Update tampilan harga
             document.getElementById('modal-item-price').textContent = `Rp ${totalPrice.toLocaleString('id-ID')}`;
         }
         
+        // ==========================================================
+        // [--- PERUBAHAN FUNGSI 4: addItemFromModal ---]
+        // ==========================================================
         window.addItemFromModal = function() {
             if (!currentModalItem) return;
 
             const variantSelect = document.getElementById('modal-item-variant');
-            let selectedVariant = '';
+            const itemName = currentModalItem.name;
             
-            // Cek jika varian ada dan ditampilkan
-            if (currentModalItem.variants && currentModalItem.variants.trim() !== '') {
-                selectedVariant = variantSelect.value;
+            let selectedVariantName = '';
+            let selectedPrice = 0;
+
+            // Cek jika ada > 1 pilihan harga
+            if (currentModalItem.priceOptions && currentModalItem.priceOptions.length > 1) {
+                // Ambil data dari dropdown
+                const selectedValue = variantSelect.value; // cth: "Large|60000"
+                const parts = selectedValue.split('|');
+                selectedVariantName = parts[0]; // cth: "Large"
+                selectedPrice = parseFloat(parts[1]); // cth: 60000
+            } else if (currentModalItem.priceOptions && currentModalItem.priceOptions.length === 1) {
+                // Ambil data dari satu-satunya pilihan
+                selectedVariantName = currentModalItem.priceOptions[0].name; // cth: "Regular" atau "Default"
+                selectedPrice = currentModalItem.priceOptions[0].price;
+                // Jika namanya "Default", kita anggap tidak ada varian
+                if (selectedVariantName.toLowerCase() === 'default' || selectedVariantName.toLowerCase() === 'reguler') {
+                    selectedVariantName = ''; // Tidak perlu tampil di keranjang
+                }
+            } else if (currentModalItem.price) {
+                // Fallback data lama
+                selectedPrice = currentModalItem.price;
+                // selectedVariantName tetap ''
             }
 
-            const itemName = currentModalItem.name;
-            const itemPrice = currentModalItem.price;
-            
             // Buat kunci unik untuk keranjang (Nama + Varian)
-            const itemKey = selectedVariant ? `${itemName} (${selectedVariant})` : itemName;
+            // cth: "V60 (Large)" atau "Lecy Sago"
+            const itemKey = selectedVariantName ? `${itemName} (${selectedVariantName})` : itemName;
 
             // Cek jika item sudah ada di keranjang
             const existingItem = cart.find(cartItem => cartItem.key === itemKey);
@@ -1318,9 +1389,9 @@
                 // Jika tidak, tambahkan item baru
                 cart.push({
                     key: itemKey,
-                    name: itemName, // Simpan nama asli
-                    variant: selectedVariant, // Simpan varian
-                    price: itemPrice,
+                    name: itemName, // Nama asli: "V60"
+                    variant: selectedVariantName, // Varian: "Large"
+                    price: selectedPrice, // Harga: 60000
                     quantity: currentModalQuantity
                 });
             }
@@ -1570,7 +1641,7 @@
         }
 
         // ==========================================================
-        // [--- PERUBAHAN 3: Fungsi confirmPayment() diganti seluruhnya ---]
+        // [--- FUNGSI confirmPayment() TIDAK DIUBAH DARI SEBELUMNYA ---]
         // ==========================================================
         window.confirmPayment = async function() {
             if (!selectedPaymentMethod) {
@@ -1701,9 +1772,6 @@
                 confirmBtn.textContent = 'Konfirmasi Pembayaran';
             }
         }
-        // ==========================================================
-        // [--- AKHIR PERUBAHAN 3 ---]
-        // ==========================================================
 
 
         // --- FUNGSI UTILITAS ---
