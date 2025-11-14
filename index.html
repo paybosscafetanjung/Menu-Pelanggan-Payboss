@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-<!-- ... (Kode <head> dan <style> Anda tidak berubah) ... -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payboss Cafe - Menu Pelanggan</title>
     <style>
         body {
             box-sizing: border-box;
@@ -763,7 +764,7 @@
 </head>
 
 <body>
-<!-- ... (Kode <body> Anda tidak berubah) ... -->
+    <!-- Navigation -->
     <nav class="nav-bar">
         <a href="#" class="nav-brand">☕ Payboss Cafe</a>
     </nav>
@@ -1128,6 +1129,8 @@
                 if(category === 'Food') button.textContent = '🍛 ' + button.textContent;
                 if(category === 'pastry') button.textContent = '🥐 ' + button.textContent;
                 if(category === 'coffee') button.textContent = '☕ ' + button.textContent;
+                if(category === 'mocktail') button.textContent = '🍹 ' + button.textContent;
+                if(category === 'tea') button.textContent = '🍹🍵 ' + button.textContent;
                 if(category === 'non-coffee') button.textContent = '🥤 ' + button.textContent;
 
                 button.onclick = () => switchCategory(category);
@@ -1206,10 +1209,6 @@
             } else {
                 imageHtml = `<span class="emoji">${item.emoji || '🍽️'}</span>`;
             }
-            
-            // --- LOGIKA VARIAN LAMA (dihapus, diganti logika harga) ---
-            // const variantsHtml = item.variants ?
-            //     `<div class="slide-variants"><strong>Varian:</strong> ${item.variants}</div>` : '';
             
             // Tampilkan overlay "HABIS" jika tidak tersedia
             const soldOutHtml = !isAvailable ? 
