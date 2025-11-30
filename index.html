@@ -723,7 +723,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, getDoc, Timestamp, query, orderBy, where, getDocs, runTransaction, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        // OPTIMASI: Tambahkan enableIndexedDbPersistence
+        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, getDoc, Timestamp, query, orderBy, where, getDocs, runTransaction, increment, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB0nHqdAw_dV9pHcQ_cSnWtNsn4CwwwUNc",
@@ -737,6 +738,18 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        // --- OPTIMIZATION: ENABLE OFFLINE PERSISTENCE (CACHE) ---
+        // Ini menyimpan data menu di memori HP. 
+        // Sangat krusial untuk aplikasi menu pelanggan agar tidak boros kuota Read.
+        enableIndexedDbPersistence(db).catch((err) => {
+            if (err.code == 'failed-precondition') {
+                console.log('Multiple tabs open, persistence can only be enabled in one tab at a time.');
+            } else if (err.code == 'unimplemented') {
+                console.log('The current browser does not support all of the features required to enable persistence');
+            }
+        });
+        // -----------------------------------------------------------
 
         let cart = [];
         let currentCategory = '';
@@ -756,6 +769,9 @@
         });
 
         function initializeAppLogic() {
+            // Kita tetap menggunakan onSnapshot agar status HABIS/Available tetap Realtime
+            // Tapi karena sudah ada Persistence di atas, ini tidak akan memakan kuota Read 
+            // jika data tidak berubah.
             const menuQuery = query(collection(db, 'menu'), orderBy('name'));
 
             onSnapshot(menuQuery, (snapshot) => {
