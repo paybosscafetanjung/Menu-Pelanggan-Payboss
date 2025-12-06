@@ -1382,7 +1382,7 @@
                 await addDoc(collection(db, "orders"), finalOrderData);
                 
                 // Update Penjualan
-                cart.forEach(async (item) => {
+                /* cart.forEach(async (item) => {
                     if (item.id) {
                         const menuRef = doc(db, "menu", item.id);
                         await updateDoc(menuRef, {
@@ -1390,7 +1390,7 @@
                         }).catch(err => console.log("Gagal update sales: ", err));
                     }
                 });
-                
+                */
                 // Populate Success Modal
                 document.getElementById('success-queue-number').textContent = `#${newQueueNumber}`;
                 document.getElementById('success-customer').textContent = customerName;
