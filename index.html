@@ -760,8 +760,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        // OPTIMASI: Tambahkan enableIndexedDbPersistence
-        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, getDoc, Timestamp, query, orderBy, where, getDocs, runTransaction, increment, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        // OPTIMASI: Ganti onSnapshot dengan getDocs untuk initial load
+        import { getFirestore, collection, getDocs, addDoc, serverTimestamp, doc, updateDoc, getDoc, Timestamp, query, orderBy, where, runTransaction, increment, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB0nHqdAw_dV9pHcQ_cSnWtNsn4CwwwUNc",
@@ -777,8 +777,6 @@
         const db = getFirestore(app);
 
         // --- OPTIMIZATION: ENABLE OFFLINE PERSISTENCE (CACHE) ---
-        // Ini menyimpan data menu di memori HP. 
-        // Sangat krusial untuk aplikasi menu pelanggan agar tidak boros kuota Read.
         enableIndexedDbPersistence(db).catch((err) => {
             if (err.code == 'failed-precondition') {
                 console.log('Multiple tabs open, persistence can only be enabled in one tab at a time.');
@@ -786,8 +784,7 @@
                 console.log('The current browser does not support all of the features required to enable persistence');
             }
         });
-        // -----------------------------------------------------------
-
+        
         let cart = [];
         let currentCategory = '';
         let allMenuItems = [];
@@ -795,9 +792,8 @@
         let currentModalItem = null;
         let currentModalQuantity = 1;
         
-        // VARIABEL PROMO GLOBAL
         let appliedPromoCode = null;
-        let appliedDiscountPercent = 0; // dalam desimal, misal 0.1 untuk 10%
+        let appliedDiscountPercent = 0; 
 
         document.addEventListener('DOMContentLoaded', function () {
             initializeAppLogic();
@@ -805,25 +801,33 @@
             searchInput.addEventListener('input', handleSearchInput);
         });
 
-        function initializeAppLogic() {
-            // Kita tetap menggunakan onSnapshot agar status HABIS/Available tetap Realtime
-            // Tapi karena sudah ada Persistence di atas, ini tidak akan memakan kuota Read 
-            // jika data tidak berubah.
+        async function initializeAppLogic() {
+            // PERBAIKAN UTAMA: MENGGUNAKAN getDocs BUKAN onSnapshot
+            // Ini mencegah aplikasi membaca ulang data terus menerus secara otomatis.
+            // Aplikasi hanya akan membaca data 1x saat dibuka/refresh.
             const menuQuery = query(collection(db, 'menu'), orderBy('name'));
 
-            onSnapshot(menuQuery, (snapshot) => {
+            try {
+                // Mencoba ambil data (akan ambil dari cache dulu jika tersedia & valid karena persistence aktif)
+                const snapshot = await getDocs(menuQuery);
+                
                 allMenuItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderCategoryButtons();
-                if (!currentCategory && allMenuItems.length > 0) {
-                    const firstCategory = allMenuItems[0].category || 'lainnya';
-                    switchCategory(firstCategory);
+                
+                if (allMenuItems.length === 0) {
+                     document.getElementById('menu-slider').innerHTML = '<div style="color:#3E2723; text-align:center; padding: 50px;">Menu kosong atau gagal dimuat.</div>';
                 } else {
-                    switchCategory(currentCategory);
+                    renderCategoryButtons();
+                    if (!currentCategory && allMenuItems.length > 0) {
+                        const firstCategory = allMenuItems[0].category || 'lainnya';
+                        switchCategory(firstCategory);
+                    } else {
+                        switchCategory(currentCategory);
+                    }
                 }
-            }, (error) => {
+            } catch (error) {
                 console.error("Error mengambil data menu: ", error);
                 document.getElementById('menu-slider').innerHTML = '<div style="color:#3E2723; text-align:center; padding: 50px;">Gagal memuat menu. Periksa koneksi internet Anda.</div>';
-            });
+            }
 
             updateCartDisplay();
         }
@@ -1381,16 +1385,6 @@
                 const finalOrderData = { ...baseOrderData, queueNumber: newQueueNumber };
                 await addDoc(collection(db, "orders"), finalOrderData);
                 
-                // Update Penjualan
-                /* cart.forEach(async (item) => {
-                    if (item.id) {
-                        const menuRef = doc(db, "menu", item.id);
-                        await updateDoc(menuRef, {
-                            sales: increment(item.quantity)
-                        }).catch(err => console.log("Gagal update sales: ", err));
-                    }
-                });
-                */
                 // Populate Success Modal
                 document.getElementById('success-queue-number').textContent = `#${newQueueNumber}`;
                 document.getElementById('success-customer').textContent = customerName;
@@ -1456,7 +1450,7 @@
                 message += `Diskon: ${discountText}\n`;
             }
             
-            message += `*TOTAL BAYAR: ${totalText}*\n\n`;
+            message += `*TOTAL BAYAR: ${totalText}*\\n\\n`;
             message += `_Berikut bukti pembayaran saya (foto terlampir):_`;
 
             const phoneNumber = "6285124068881";
