@@ -11,13 +11,9 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f8f9fa;
-            min-height: 100%;
-            padding-bottom: 80px;
-        }
-
-        html {
-            height: 100%;
+            background: #f4f4f4;
+            min-height: 100vh;
+            padding-bottom: 100px; /* Ruang untuk cart di bawah */
         }
 
         /* Navigation */
@@ -35,296 +31,131 @@
 
         .nav-brand {
             color: #D2B48C;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: bold;
             text-decoration: none;
         }
 
-        /* Search Styles */
         .search-trigger-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #D2B48C;
-            transition: transform 0.2s;
-        }
-        
-        .search-trigger-btn:hover {
-            transform: scale(1.1);
-            color: white;
+            background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #D2B48C;
         }
 
-        .search-content {
-            align-items: stretch !important;
-            text-align: left;
-            min-height: 50vh;
-            justify-content: flex-start !important;
-        }
-
-        .search-box-wrapper {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        #search-input {
-            width: 100%;
-            padding: 15px 15px 15px 45px;
-            font-size: 1.1rem;
-            border: 2px solid #8B4513;
-            border-radius: 12px;
-            box-sizing: border-box;
-            outline: none;
-        }
-        
-        .search-icon-inside {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.2rem;
-            color: #888;
-        }
-
-        .search-results-list {
-            overflow-y: auto;
-            max-height: 50vh;
-            margin-top: 10px;
-        }
-
-        .search-item-result {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .search-item-thumb {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
-            object-fit: cover;
-            margin-right: 15px;
-            background: #eee;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-            border: 1px solid #ddd;
-        }
-
-        .search-item-info { flex: 1; }
-
-        .result-name {
-            font-weight: bold;
-            color: #3E2723;
-            font-size: 1rem;
-            display: block;
-            margin-bottom: 4px;
-        }
-        
-        .result-category {
-            font-size: 0.75rem;
-            color: #666;
-            background: #eee;
-            padding: 2px 6px;
-            border-radius: 4px;
-            display: inline-block;
-        }
-
-        .result-price {
-            color: #8B4513;
-            font-weight: bold;
-            font-size: 0.95rem;
-        }
-
-        .no-results {
-            text-align: center;
-            color: #888;
-            padding: 20px;
-            font-style: italic;
-        }
-
-        /* Menu Page Styles */
-        .menu-slider-container {
-            position: relative;
-            width: 100%;
-            min-height: calc(100vh - 70px);
-            background: #f8f9fa;
-        }
-
+        /* Category Selector (Sticky) */
         .category-selector {
             position: sticky;
-            top: 70px;
+            top: 60px; /* Disesuaikan dengan tinggi navbar */
             z-index: 900;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 20px;
+            background: white;
+            padding: 10px 15px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             overflow-x: auto;
             white-space: nowrap;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            backdrop-filter: blur(5px);
             -webkit-overflow-scrolling: touch;
         }
-
-        .category-selector::-webkit-scrollbar {
-            height: 4px;
-        }
-        .category-selector::-webkit-scrollbar-thumb {
-            background: #D2B48C;
-            border-radius: 4px;
-        }
+        
+        .category-selector::-webkit-scrollbar { height: 0; } /* Hide scrollbar */
 
         .category-btn {
-            background: white;
-            color: #8B4513;
-            border: 1px solid #8B4513;
+            background: #f0f0f0;
+            color: #3E2723;
+            border: 1px solid #ddd;
             padding: 8px 16px;
             border-radius: 20px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-            flex-shrink: 0;
+            font-size: 0.85rem;
+            transition: all 0.2s;
         }
 
         .category-btn.active {
             background: #8B4513;
             color: white;
-            box-shadow: 0 4px 10px rgba(139, 69, 19, 0.3);
+            border-color: #8B4513;
+            box-shadow: 0 2px 5px rgba(139, 69, 19, 0.3);
         }
 
-        .menu-slider {
+        /* GRID LAYOUT UTAMA (Pengganti Slider) */
+        .menu-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 20px;
-            width: 100%;
-            box-sizing: border-box;
+            grid-template-columns: repeat(2, 1fr); /* Default 2 kolom di HP */
+            gap: 15px;
         }
 
-        .menu-slide {
+        /* Responsif untuk Tablet/Desktop */
+        @media (min-width: 768px) {
+            .menu-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (min-width: 1024px) {
+            .menu-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        /* Card Menu Styles */
+        .menu-card {
             background: white;
-            border-radius: 15px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            transition: transform 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             display: flex;
             flex-direction: column;
-            height: auto;
-            width: 100% !important;
+            transition: transform 0.2s;
+            position: relative;
         }
 
-        .menu-slide:hover {
-            transform: translateY(-5px);
-        }
+        .menu-card:active { transform: scale(0.98); }
 
-        .slide-image {
+        .card-image {
             width: 100%;
-            height: 200px;
+            height: 140px; /* Tinggi gambar fix agar rapi */
             background: #eee;
             position: relative;
-            overflow: hidden;
         }
 
-        .slide-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
+        .card-image img {
+            width: 100%; height: 100%; object-fit: cover;
         }
 
-        .menu-slide:hover .slide-image img {
-            transform: scale(1.1);
+        .card-badges {
+            position: absolute; top: 8px; left: 8px; display: flex; flex-direction: column; gap: 4px;
         }
-
-        /* --- FITUR BADGE & DISKON --- */
-        .best-seller-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: linear-gradient(45deg, #FF4500, #FFD700);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            z-index: 5;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 5px;
+        .badge {
+            font-size: 0.7rem; font-weight: bold; padding: 3px 8px; border-radius: 4px; color: white;
         }
+        .badge-promo { background: #d32f2f; }
+        .badge-bestseller { background: linear-gradient(45deg, #FF8C00, #FFD700); }
 
-        .discount-badge {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: #d32f2f;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            z-index: 5;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .original-price {
-            text-decoration: line-through;
-            color: #999;
-            font-size: 0.9rem;
-            margin-right: 8px;
-        }
-        
-        .discount-price {
-            color: #d32f2f;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        /* --- AKHIR CSS BADGE --- */
-
-        .slide-sold-out {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 3;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .slide-content {
-            padding: 20px;
+        .card-content {
+            padding: 12px;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            text-align: left;
-            height: auto;
-            background: white;
         }
 
-        .slide-title {
-            font-size: 1.2rem;
+        .card-title {
             font-weight: bold;
+            font-size: 1rem;
             color: #3E2723;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
+            line-height: 1.2;
+            
+            /* Truncate text (titik-titik jika kepanjangan) */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        .slide-description {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 15px;
-            line-height: 1.4;
+        .card-desc {
+            font-size: 0.8rem;
+            color: #777;
+            margin-bottom: 8px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -332,436 +163,263 @@
             flex-grow: 1;
         }
 
-        .slide-price-container {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .slide-price {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #8B4513;
-        }
-
-        .order-slide-btn {
-            background: #8B4513;
-            color: white;
-            border: none;
-            padding: 10px;
-            width: 100%;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.95rem;
+        .card-footer {
             margin-top: auto;
-        }
-        
-        .order-slide-btn:disabled { background: #ccc; cursor: not-allowed; }
-
-        .slide-nav, .slide-indicators {
-            display: none !important;
-        }
-
-        @media (max-width: 600px) {
-            .menu-slider {
-                grid-template-columns: 1fr;
-                padding: 15px;
-                gap: 15px;
-            }
-            .category-selector {
-                padding: 12px 15px;
-            }
-            .slide-image {
-                height: 180px;
-            }
-        }
-
-        /* Cart Styles */
-        .cart-toggle {
-            position: fixed;
-            right: 20px;
-            bottom: 20px;
-            background: #8B4513;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 999;
-            font-size: 1.2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .cart-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #dc3545;
-            color: white;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        .cart-sidebar {
-            position: fixed;
-            right: -100%;
-            top: 0;
-            width: 100%;
-            max-width: 400px;
-            height: 100%;
-            background: white;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-            transition: right 0.3s ease;
-            z-index: 1500;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .cart-sidebar.open {
-            right: 0;
-        }
-
-        .cart-header {
-            background: #8B4513;
-            color: white;
-            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1501;
-            flex-shrink: 0;
         }
 
-        .cart-header h3 { margin: 0; font-size: 1.2rem; }
-
-        .close-cart {
-            background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; padding: 5px;
+        .price-wrapper {
+            display: flex; flex-direction: column;
+        }
+        .price-strike {
+            font-size: 0.75rem; color: #999; text-decoration: line-through;
+        }
+        .price-final {
+            font-weight: bold; color: #8B4513; font-size: 1rem;
         }
 
-        .cart-items {
-            padding: 20px; overflow-y: auto; flex-grow: 1; min-height: 100px;
-        }
-
-        .cart-item {
-            display: flex; justify-content: space-between; align-items: flex-start; padding: 15px 0; border-bottom: 1px solid #eee;
-        }
-
-        .cart-item-info { flex: 1; margin-right: 15px; }
-        .cart-item-name { font-weight: bold; font-size: 1rem; margin-bottom: 5px; color: #3E2723; }
-        .cart-item-variant { font-size: 0.85rem; color: #666; margin-bottom: 5px; }
-        .cart-item-details { font-size: 0.9rem; color: #888; }
-        .cart-item-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-        .cart-item-price { font-weight: bold; color: #8B4513; font-size: 1rem; }
-
-        .remove-item {
-            background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;
-        }
-
-        .cart-total {
-            padding: 20px; border-top: 2px solid #8B4513; background: #f8f9fa; position: sticky; bottom: 0; flex-shrink: 0;
-        }
-
-        .total-breakdown { margin-bottom: 20px; }
-        .total-line { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 1rem; }
-        .total-line.discount { color: #2e7d32; } /* Warna Hijau untuk Diskon */
-        .total-line.final { font-weight: bold; font-size: 1.2rem; color: #8B4513; border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px; }
-
-        .checkout-btn {
-            background: #8B4513; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s ease;
-        }
-        .checkout-btn:hover:not(:disabled) { background: #A0522D; }
-        .checkout-btn:disabled { background: #ccc; cursor: not-allowed; }
-        
-        /* Button WA Style */
-        .wa-btn {
-            background: #25D366;
+        .add-btn {
+            background: #8B4513;
             color: white;
-        }
-        .wa-btn:hover {
-            background: #128C7E;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); box-sizing: border-box;
-        }
-        .modal.active { display: flex; }
-        .modal-content {
-            background: white; padding: 30px; border-radius: 15px; max-width: 500px; width: 100%; text-align: center; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        .modal-content h3 { margin-top: 0; margin-bottom: 25px; color: #3E2723; font-size: 1.5rem; }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #3E2723; }
-        .form-group input, .form-group select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
-        
-        /* Promo Code Styling */
-        .promo-group {
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
             display: flex;
-            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(139, 69, 19, 0.3);
         }
-        .promo-btn {
-            background: #666; color: white; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; font-weight: bold;
-        }
-        .promo-message {
-            font-size: 0.9rem; margin-top: 5px; min-height: 20px;
+        
+        .add-btn:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
+
+        .sold-out-overlay {
+            position: absolute; inset: 0; background: rgba(255,255,255,0.7);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; color: #d32f2f; font-size: 1.2rem; transform: rotate(-15deg);
+            border: 2px solid #d32f2f; margin: 30px; border-radius: 8px;
         }
 
-        .qr-code { width: 250px; height: 250px; background: #f0f0f0; margin: 20px auto; display: flex; align-items: center; justify-content: center; border: 2px dashed #8B4513; border-radius: 10px; flex-direction: column; overflow: hidden; }
-        .qr-code img { width: 100%; height: 100%; object-fit: cover; }
+        /* Floating Cart */
+        .cart-float {
+            position: fixed;
+            bottom: 20px; left: 20px; right: 20px;
+            background: #3E2723;
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            z-index: 1100;
+            transform: translateY(150%); /* Hidden by default */
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .cart-float.show { transform: translateY(0); }
+        .cart-info { display: flex; flex-direction: column; }
+        .cart-total-qty { font-weight: bold; font-size: 0.9rem; color: #D2B48C; }
+        .cart-total-price { font-weight: bold; font-size: 1.1rem; }
+
+        /* Modal & Other Styles (Reused) */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: flex-end; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; width: 100%; max-width: 500px; padding: 25px; border-radius: 20px 20px 0 0; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
-        .receipt-info { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: left; }
-        .receipt-line { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
-        .receipt-line.total { font-weight: bold; border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px; color: #8B4513; font-size: 1.1rem; }
+        .search-content { align-items: flex-start; height: 100%; border-radius: 0; }
+        .search-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; margin-bottom: 15px; }
+        .search-result-item { display: flex; padding: 10px; border-bottom: 1px solid #eee; align-items: center; }
         
-        .modal-buttons { display: flex; flex-direction: column; gap: 12px; margin-top: 25px; }
-        .btn-cancel { background: #6c757d; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+        /* Modal Variants */
+        .qty-control { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 20px 0; }
+        .qty-btn-modal { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #8B4513; background: white; color: #8B4513; font-size: 1.2rem; }
+        .qty-val { font-size: 1.5rem; font-weight: bold; min-width: 40px; text-align: center; }
+        .add-to-cart-btn { width: 100%; background: #8B4513; color: white; padding: 15px; border: none; border-radius: 10px; font-weight: bold; font-size: 1rem; }
+
+        .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #333; color: white; padding: 10px 20px; border-radius: 30px; z-index: 3000; transition: transform 0.3s; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .notification.show { transform: translateX(-50%) translateY(0); }
         
-        .quantity-controls { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 25px 0; background: #f8f9fa; padding: 12px; border-radius: 8px; }
-        .qty-btn { background: #8B4513; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; line-height: 1; }
-        .qty-display { font-weight: bold; font-size: 1.5rem; min-width: 40px; text-align: center; color: #3E2723; }
+        .receipt-line { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
+        .receipt-total { border-top: 1px dashed #ccc; padding-top: 10px; font-weight: bold; font-size: 1.1rem; color: #8B4513; }
+        
+        /* Form Checkout */
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.9rem; }
+        .form-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+
+        /* --- STYLE BARU: MEJA TERISI --- */
+        .occupied-table {
+            color: #d32f2f;
+            background-color: #ffebee;
+            font-weight: bold;
+        }
     </style>
 </head>
 
 <body>
+
     <nav class="nav-bar">
-        <a href="#" class="nav-brand">☕ Payboss Cafe</a>
-        <button class="search-trigger-btn" onclick="openSearch()">
-            🔍
-        </button>
+        <a href="#" class="nav-brand">☕ Payboss Menu</a>
+        <button class="search-trigger-btn" onclick="openSearch()">🔍</button>
     </nav>
 
-    <div id="menu-page">
-        <div class="menu-slider-container">
-            <div class="category-selector" id="category-selector"></div>
-            <div class="menu-slider" id="menu-slider"></div>
+    <!-- Kategori Sticky -->
+    <div class="category-selector" id="category-selector">
+        <!-- Akan diisi oleh JS -->
+    </div>
+
+    <!-- Container Menu Grid -->
+    <div class="menu-container">
+        <div class="menu-grid" id="menu-grid">
+            <!-- Item menu akan di-render di sini -->
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">
+                Memuat menu...
+            </div>
         </div>
     </div>
 
-    <button class="cart-toggle" id="cart-toggle" onclick="toggleCart()">
-        🛒
-        <span class="cart-count" id="cart-count">0</span>
-    </button>
+    <!-- Floating Cart Button (Muncul jika ada item) -->
+    <div class="cart-float" id="cart-float" onclick="openCheckout()">
+        <div class="cart-info">
+            <span class="cart-total-qty">0 Item</span>
+            <span class="cart-total-price">Rp 0</span>
+        </div>
+        <div style="font-weight: bold;">Checkout ➔</div>
+    </div>
 
-    <!-- MODAL PENCARIAN -->
-    <div class="modal" id="search-modal">
+    <!-- MODAL SEARCH -->
+    <div class="modal" id="search-modal" style="align-items: flex-start;">
         <div class="modal-content search-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 style="margin:0; font-size: 1.3rem;">Cari Menu</h3>
-                <button class="close-cart" onclick="closeModal('search-modal')" style="color: #3E2723; background:none; font-size: 2rem;">×</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3>Cari Menu</h3>
+                <button onclick="closeModal('search-modal')" style="background:none; border:none; font-size:1.5rem;">✕</button>
             </div>
-            <div class="search-box-wrapper">
-                <span class="search-icon-inside">🔍</span>
-                <input type="text" id="search-input" placeholder="Ketik menu (contoh: Nasi)..." autocomplete="off">
-            </div>
-            <div id="search-results" class="search-results-list"></div>
+            <input type="text" id="search-input" class="search-input" placeholder="Mau makan apa hari ini?">
+            <div id="search-results"></div>
         </div>
     </div>
 
-    <!-- CART SIDEBAR -->
-    <div class="cart-sidebar" id="cart-sidebar">
-        <div class="cart-header">
-            <h3>🛒 Keranjang Belanja</h3>
-            <button class="close-cart" onclick="toggleCart()">×</button>
-        </div>
-        <div class="cart-items" id="cart-items"></div>
-        <div class="cart-total">
-            <div class="total-breakdown">
-                <div class="total-line"><span>Subtotal:</span><span id="cart-subtotal">Rp 0</span></div>
-                <!-- Tempat tampil diskon jika ada -->
-                <div class="total-line final"><span>Total:</span><span id="cart-total">Rp 0</span></div>
+    <!-- MODAL PILIH VARIAN/JUMLAH -->
+    <div class="modal" id="item-modal">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between;">
+                <h3 id="modal-item-name" style="margin:0;">Nama Menu</h3>
+                <button onclick="closeModal('item-modal')" style="background:none; border:none; font-size:1.5rem;">✕</button>
             </div>
-            <button class="checkout-btn" onclick="showCheckout()" disabled>Checkout</button>
+            <p id="modal-item-desc" style="color:#666; font-size:0.9rem; margin-top:5px;"></p>
+            
+            <div id="modal-variant-container" style="margin-top:15px; display:none;">
+                <label class="form-label">Pilih Varian:</label>
+                <select id="modal-item-variant" class="form-input" onchange="updateModalPrice()"></select>
+            </div>
+
+            <div class="qty-control">
+                <button class="qty-btn-modal" onclick="adjustModalQty(-1)">-</button>
+                <span class="qty-val" id="modal-qty">1</span>
+                <button class="qty-btn-modal" onclick="adjustModalQty(1)">+</button>
+            </div>
+
+            <button class="add-to-cart-btn" onclick="addToCartFromModal()">
+                Tambah - <span id="modal-total-price">Rp 0</span>
+            </button>
         </div>
     </div>
 
-    <!-- MODALS -->
+    <!-- MODAL CHECKOUT -->
     <div class="modal" id="checkout-modal">
         <div class="modal-content">
-            <h3>📋 Informasi Pemesanan</h3>
-            <form id="checkout-form" onsubmit="processCheckout(event)">
-                <div class="form-group">
-                    <label for="customer-name">Nama Pelanggan:</label>
-                    <input type="text" id="customer-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="table-number">Nomor Meja:</label>
-                    <select id="table-number" required>
-                        <option value="">Pilih Meja</option>
-                        <option value="1">Meja 1</option>
-                        <option value="2">Meja 2</option>
-                        <option value="3">Meja 3</option>
-                        <option value="4">Meja 4</option>
-                        <option value="5">Meja 5</option>
-                        <option value="6">Meja 6</option>
-                        <option value="7">Meja 7</option>
-                        <option value="8">Meja 8</option>
-                        <option value="9">Meja 9</option>
-                        <option value="10">Meja 10</option>
-                        <option value="11">Meja 11</option>
-                        <option value="12">Meja 12</option>
-                        <option value="13">Meja 13</option>
-                        <option value="14">Meja 14</option>
-                        <option value="15">Meja 15</option>
-                        <option value="16">Meja 16</option>
-                        <option value="17">Meja 17</option>
-                        <option value="18">Meja 18</option>
-                        <option value="19">Meja 19</option>
-                        <option value="20">Meja 20</option>
-                        <option value="21">Meja 21</option>
-                        <option value="22">Meja 22</option>
-                        <option value="23">Meja 23</option>
-                        <option value="24">Meja 24</option>
-                        <option value="25">Meja 25</option>
-                        <option value="26">Meja 26</option>
-                        <option value="27">Meja 27</option>
-                        <option value="28">Meja 28</option>
-                        <option value="29">Meja 29</option>
-                        <option value="30">Meja 30</option>
-                        <option value="31">Meja 31</option>
-                        <option value="32">Meja 32</option>
-                        <option value="33">Meja 33</option>
-        
-                        <option value="Meja VIP Payboss">Meja VIP Payboss</option>
-                        <option value="Karaoke Room 1">Karaoke Room 1</option>
-                        <option value="Karaoke Room 2">Karaoke Room 2</option>
-                        <option value="Karaoke Room 3">Karaoke Room 3</option>
-                        <option value="Take Away">Take Away</option>
-                    </select>
-                </div>
-                
-                <!-- FITUR BARU: KODE PROMO -->
-                <div class="form-group">
-                    <label for="promo-code">Kode Promo (Opsional):</label>
-                    <div class="promo-group">
-                        <input type="text" id="promo-code" placeholder="Masukan kode..." style="text-transform: uppercase;">
-                        <button type="button" class="promo-btn" onclick="checkPromo()">Cek</button>
-                    </div>
-                    <div id="promo-message" class="promo-message"></div>
-                </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="margin:0;">Pesanan Saya</h3>
+                <button onclick="closeModal('checkout-modal')" style="background:none; border:none; font-size:1.5rem;">✕</button>
+            </div>
+            
+            <div id="cart-list" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px;"></div>
+            
+            <div class="form-group">
+                <input type="text" id="cust-name" class="form-input" placeholder="Nama Pelanggan (Wajib)">
+            </div>
+            <div class="form-group">
+                <select id="table-no" class="form-input">
+                    <option value="">Pilih No Meja</option>
+                    <option value="1">Meja 1</option><option value="2">Meja 2</option><option value="3">Meja 3</option><option value="4">Meja 4</option><option value="5">Meja 5</option>
+                    <option value="6">Meja 6</option><option value="7">Meja 7</option><option value="8">Meja 8</option><option value="9">Meja 9</option><option value="10">Meja 10</option>
+                    <option value="11">Meja 11</option><option value="12">Meja 12</option><option value="13">Meja 13</option><option value="14">Meja 14</option><option value="15">Meja 15</option>
+                    <option value="16">Meja 16</option><option value="17">Meja 17</option><option value="18">Meja 18</option><option value="19">Meja 19</option><option value="20">Meja 20</option>
+                    <option value="21">Meja 21</option><option value="22">Meja 22</option><option value="23">Meja 23</option><option value="24">Meja 24</option><option value="25">Meja 25</option>
+                    <option value="26">Meja 26</option><option value="27">Meja 27</option><option value="28">Meja 28</option><option value="29">Meja 29</option><option value="30">Meja 30</option>
+                    <option value="31">Meja 31</option><option value="32">Meja 32</option><option value="33">Meja 33</option>
+                    <option value="Meja VIP Payboss">Meja VIP Payboss</option>
+                    <option value="Karaoke Room 1">Karaoke Room 1</option>
+                    <option value="Karaoke Room 2">Karaoke Room 2</option>
+                    <option value="Karaoke Room 3">Karaoke Room 3</option>
+                    <option value="Take Away">Bungkus / Take Away</option>
+                </select>
+            </div>
+            <div class="form-group" style="display:flex; gap:10px;">
+                <input type="text" id="promo-code" class="form-input" placeholder="Kode Promo" style="text-transform:uppercase;">
+                <button onclick="applyPromo()" style="background:#666; color:white; border:none; border-radius:8px; padding:0 15px;">Cek</button>
+            </div>
+            <div id="promo-msg" style="font-size:0.8rem; margin-bottom:10px;"></div>
 
-                <div class="modal-buttons">
-                    <button type="submit" class="checkout-btn">Lanjut ke Pembayaran</button>
-                    <button type="button" class="btn-cancel" onclick="closeModal('checkout-modal')">Batal</button>
-                </div>
-            </form>
+            <div style="background:#f8f9fa; padding:15px; border-radius:10px; margin-bottom:15px;">
+                <div class="receipt-line"><span>Subtotal</span><span id="checkout-subtotal">0</span></div>
+                <div class="receipt-line" id="checkout-discount-row" style="display:none; color:green;"><span>Diskon</span><span id="checkout-discount">0</span></div>
+                <div class="receipt-total receipt-line"><span>Total Bayar</span><span id="checkout-total">0</span></div>
+            </div>
+
+            <button class="add-to-cart-btn" onclick="showPayment()">Lanjut Pembayaran</button>
         </div>
     </div>
 
-    <!-- MODAL PEMBAYARAN (HANYA QRIS) -->
+    <!-- MODAL PAYMENT -->
     <div class="modal" id="payment-modal">
-        <div class="modal-content">
-            <h3>💳 Pembayaran QRIS</h3>
-            <div class="receipt-info">
-                <h4>📋 Detail Tagihan</h4>
-                <div id="payment-items"></div>
-                <hr style="margin: 10px 0; border: 0; border-top: 1px dashed #ccc;">
-                <div class="receipt-line"><span>Subtotal:</span><span id="payment-subtotal"></span></div>
-                <div class="receipt-line" id="payment-discount-row" style="display:none; color: #2e7d32;">
-                    <span>Diskon (<span id="payment-discount-name"></span>):</span>
-                    <span id="payment-discount-amount"></span>
+        <div class="modal-content" style="text-align: center;">
+            <h3>Metode Pembayaran</h3>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin:20px 0;">
+                <div onclick="selectPayment('QRIS')" style="border:2px solid #ddd; padding:20px; border-radius:10px; cursor:pointer;" id="pay-qris">
+                    <div style="font-size:2rem;">📱</div>
+                    <div>QRIS</div>
                 </div>
-                <div class="receipt-line total"><span>Total Bayar:</span><span id="payment-total"></span></div>
+                <div onclick="selectPayment('CASH')" style="border:2px solid #ddd; padding:20px; border-radius:10px; cursor:pointer;" id="pay-cash">
+                    <div style="font-size:2rem;">💵</div>
+                    <div>Tunai</div>
+                </div>
             </div>
             
-            <!-- QRIS SECTION LANGSUNG MUNCUL -->
-            <div id="qris-section" style="display: block; margin-top: 15px;">
-                <p style="margin-bottom:5px;"><strong>Scan QR Code untuk pembayaran</strong></p>
-                <div class="qr-code">
-                    <img src="https://i.ibb.co.com/F4hdLtxs/Whats-App-Image-2025-11-30-at-00-14-47.jpg" alt="QRIS Payboss Cafe">
-                </div>
-                <p style="font-size: 0.9rem; color: #666; margin-top:10px;">Silakan scan menggunakan GoPay, OVO, Dana, atau Mobile Banking.</p>
+            <div id="qris-image" style="display:none; margin-bottom:20px;">
+                <img src="https://i.imgur.com/Pc4W6zN.jpeg" style="width:200px; height:200px; object-fit:contain;">
+                <p style="font-size:0.9rem; color:#666;">Scan QRIS di atas</p>
             </div>
 
-            <div class="modal-buttons">
-                <button class="checkout-btn" id="confirm-payment-btn" onclick="confirmPayment()">
-                    Sudah Bayar? Proses Pesanan
-                </button>
-                <button type="button" class="btn-cancel" onclick="closeModal('payment-modal')">Batal</button>
-            </div>
+            <button id="btn-confirm-pay" class="add-to-cart-btn" onclick="submitOrder()" disabled>Konfirmasi Pesanan</button>
         </div>
     </div>
 
-    <!-- MODAL SUKSES & KONFIRMASI WA -->
-    <div class="modal" id="success-modal">
-        <div class="modal-content">
-            <h3>✅ Pesanan Terkirim!</h3>
-            <div style="font-size: 4rem; margin: 10px 0;">🎉</div>
-            <div class="receipt-info" style="margin-top: 20px; text-align: left; background: #fff; padding: 0;">
-                <h4 style="text-align: center; font-size: 1.2rem; color: #3E2723; margin-bottom: 15px;">Order Summary</h4>
-                <div class="receipt-line" style="font-size: 0.9rem;"><span>Nama:</span><strong id="success-customer"></strong></div>
-                <div class="receipt-line" style="font-size: 0.9rem;"><span>Antrian:</span><strong id="success-queue-number" style="font-size: 1.1rem; color: #8B4513;"></strong></div>
-                <div class="receipt-line" style="font-size: 0.9rem;"><span>Meja:</span><strong id="success-table"></strong></div>
-                <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
-                <div id="success-receipt-items" style="padding-left: 10px;"></div>
-                <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
-                
-                <!-- Detail Harga Sukses -->
-                <div class="receipt-line" style="font-size: 0.9rem;"><span>Subtotal:</span><span id="success-subtotal"></span></div>
-                <div class="receipt-line" id="success-discount-row" style="font-size: 0.9rem; color: #2e7d32; display: none;">
-                    <span>Hemat:</span><span id="success-discount-val"></span>
-                </div>
-                <div class="receipt-line total" style="font-size: 1.2rem;"><span>Total</span><span id="success-total"></span></div>
-            </div>
-            
-            <!-- Instruksi WA -->
-            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px solid #c8e6c9;">
-                <p style="margin: 0; color: #2e7d32; font-weight: bold; font-size: 0.95rem;">
-                    ⚠️ PENTING:<br>
-                    Klik tombol di bawah untuk konfirmasi ke WhatsApp Admin & <u>LAMPIRKAN BUKTI TRANSFER/QRIS</u> Anda.
-                </p>
-            </div>
-
-            <div class="modal-buttons">
-                <!-- GANTI TOMBOL CETAK DENGAN WA -->
-                <button class="checkout-btn wa-btn" id="confirm-wa-btn" onclick="sendWhatsAppConfirmation()">
-                    📱 Konfirmasi WhatsApp & Kirim Bukti
-                </button>
-                <button type="button" class="btn-cancel" onclick="closeModal('success-modal'); resetCart();">Tutup</button>
-            </div>
+    <!-- MODAL SUKSES -->
+    <div class="modal" id="success-modal" style="align-items: center;">
+        <div class="modal-content" style="text-align:center; border-radius: 20px;">
+            <div style="font-size:4rem;">🎉</div>
+            <h3>Pesanan Terkirim!</h3>
+            <p>No Antrian: <strong id="success-queue" style="font-size:1.5rem; color:#8B4513;">#0</strong></p>
+            <p>Mohon tunggu, pesanan Anda sedang disiapkan.</p>
+            <button class="add-to-cart-btn" onclick="sendWA()">Kirim Bukti ke WA</button>
+            <button onclick="location.reload()" style="background:transparent; border:none; color:#666; margin-top:15px; text-decoration:underline; cursor:pointer;">Tutup</button>
         </div>
     </div>
 
-    <div class="modal" id="item-options-modal">
-        <div class="modal-content">
-            <h3 id="modal-item-name">Nama Item</h3>
-            <p id="modal-item-description" style="color: #666; margin-top: -15px;">Deskripsi item.</p>
-            <div class="form-group" id="modal-variant-group">
-                <label for="modal-item-variant">Pilih Varian:</label>
-                <select id="modal-item-variant" onchange="updateModalPriceAndQuantity()"></select>
-            </div>
-            <div class="quantity-controls">
-                <button class="qty-btn" id="modal-qty-minus" onclick="updateModalQuantity(-1)">-</button>
-                <span id="modal-qty-display" class="qty-display">1</span>
-                <button class="qty-btn" id="modal-qty-plus" onclick="updateModalQuantity(1)">+</button>
-            </div>
-            <div class="slide-price" id="modal-item-price" style="margin-bottom: 20px;">Rp 0</div>
-            <div class="modal-buttons">
-                <button class="checkout-btn" onclick="addItemFromModal()">Tambah ke Keranjang</button>
-                <button type="button" class="btn-cancel" onclick="closeModal('item-options-modal')">Batal</button>
-            </div>
-        </div>
-    </div>
+    <div class="notification" id="notification">Pesan notifikasi</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        // OPTIMASI: Ganti onSnapshot dengan getDocs untuk initial load
-        import { getFirestore, collection, getDocs, addDoc, serverTimestamp, doc, updateDoc, getDoc, Timestamp, query, orderBy, where, runTransaction, increment, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        // --- 1. Import Auth Functions ---
+        import { getAuth, signInAnonymously, signInWithCustomToken, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, getDocs, addDoc, doc, updateDoc, runTransaction, query, orderBy, where, serverTimestamp, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB0nHqdAw_dV9pHcQ_cSnWtNsn4CwwwUNc",
@@ -774,9 +432,10 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app); // Initialize Auth
         const db = getFirestore(app);
 
-        // --- OPTIMIZATION: ENABLE OFFLINE PERSISTENCE (CACHE) ---
+        // --- 2. Enable Persistence ---
         enableIndexedDbPersistence(db).catch((err) => {
             if (err.code == 'failed-precondition') {
                 console.log('Multiple tabs open, persistence can only be enabled in one tab at a time.');
@@ -784,694 +443,494 @@
                 console.log('The current browser does not support all of the features required to enable persistence');
             }
         });
-        
-        let cart = [];
-        let currentCategory = '';
+
+        // State Global
         let allMenuItems = [];
-        let currentMenuItems = [];
-        let currentModalItem = null;
-        let currentModalQuantity = 1;
-        
-        let appliedPromoCode = null;
-        let appliedDiscountPercent = 0; 
+        let cart = [];
+        let currentCategory = 'all';
+        let modalItem = null;
+        let modalQty = 1;
+        let activeDiscount = 0;
+        let selectedPayMethod = '';
 
         document.addEventListener('DOMContentLoaded', function () {
-            initializeAppLogic();
-            const searchInput = document.getElementById('search-input');
-            searchInput.addEventListener('input', handleSearchInput);
+            initializeAppLogic(); // Gunakan logic init baru
         });
 
+        // --- 3. ROBUST LOGIN LOGIC (Token -> Fallback Anonymous) ---
         async function initializeAppLogic() {
-            // PERBAIKAN UTAMA: MENGGUNAKAN getDocs BUKAN onSnapshot
-            // Ini mencegah aplikasi membaca ulang data terus menerus secara otomatis.
-            // Aplikasi hanya akan membaca data 1x saat dibuka/refresh.
-            const menuQuery = query(collection(db, 'menu'), orderBy('name'));
+            let loginSuccess = false;
 
-            try {
-                // Mencoba ambil data (akan ambil dari cache dulu jika tersedia & valid karena persistence aktif)
-                const snapshot = await getDocs(menuQuery);
-                
-                allMenuItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                if (allMenuItems.length === 0) {
-                     document.getElementById('menu-slider').innerHTML = '<div style="color:#3E2723; text-align:center; padding: 50px;">Menu kosong atau gagal dimuat.</div>';
-                } else {
-                    renderCategoryButtons();
-                    if (!currentCategory && allMenuItems.length > 0) {
-                        const firstCategory = allMenuItems[0].category || 'lainnya';
-                        switchCategory(firstCategory);
-                    } else {
-                        switchCategory(currentCategory);
+            // Step 1: Coba login dengan Custom Token (jika ada)
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                try {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                    loginSuccess = true;
+                    console.log("Login dengan Token berhasil.");
+                } catch (e) {
+                    console.warn("Login Token gagal, reset sesi...", e);
+                    await signOut(auth); // Bersihkan sesi lama
+                }
+            }
+
+            // Step 2: Jika gagal, fallback ke Anonymous
+            if (!loginSuccess) {
+                try {
+                    await signInAnonymously(auth);
+                    console.log("Login Anonim berhasil.");
+                } catch (anonError) {
+                    console.error("Login Anonim gagal total:", anonError);
+                    let msg = "Gagal masuk ke sistem.";
+                    if (anonError.code === 'auth/admin-restricted-operation') {
+                        msg = "Hubungi Admin: Aktifkan 'Anonymous' di Firebase Console.";
                     }
+                    document.getElementById('menu-grid').innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:50px; color:red;">${msg}<br><small>${anonError.message}</small></div>`;
+                    return; 
                 }
-            } catch (error) {
-                console.error("Error mengambil data menu: ", error);
-                document.getElementById('menu-slider').innerHTML = '<div style="color:#3E2723; text-align:center; padding: 50px;">Gagal memuat menu. Periksa koneksi internet Anda.</div>';
             }
 
-            updateCartDisplay();
+            // Step 3: Load Menu setelah login sukses
+            loadMenu();
         }
 
-        // --- LOGIKA PENCARIAN ---
-        window.openSearch = function() {
-            document.getElementById('search-modal').classList.add('active');
-            setTimeout(() => { document.getElementById('search-input').focus(); }, 100);
-        }
-
-        function handleSearchInput(e) {
-            const term = e.target.value.toLowerCase();
-            const resultsContainer = document.getElementById('search-results');
-            resultsContainer.innerHTML = '';
-
-            if (term.length < 2) {
-                if (term.length === 0) resultsContainer.innerHTML = '';
-                return;
-            }
-
-            const matches = allMenuItems.filter(item => item.name.toLowerCase().includes(term));
-
-            if (matches.length === 0) {
-                resultsContainer.innerHTML = `<div class="no-results">Tidak ada menu dengan nama "${e.target.value}"</div>`;
-                return;
-            }
-
-            matches.forEach(item => {
-                const isAvailable = item.isAvailable !== false;
+        async function loadMenu() {
+            try {
+                const q = query(collection(db, 'menu'), orderBy('name'));
+                const snapshot = await getDocs(q);
                 
-                // LOGIKA HARGA DISKON DI PENCARIAN
-                let priceDisplay = "";
-                let basePrice = 0;
+                allMenuItems = snapshot.docs.map(d => ({id: d.id, ...d.data()}));
                 
-                if (item.priceOptions && item.priceOptions.length > 0) {
-                    basePrice = Math.min(...item.priceOptions.map(p => p.price));
-                    priceDisplay = `Mulai Rp ${basePrice.toLocaleString('id-ID')}`;
-                } else if (item.price) {
-                    basePrice = item.price;
-                    priceDisplay = `Rp ${basePrice.toLocaleString('id-ID')}`;
+                if(allMenuItems.length === 0) {
+                    document.getElementById('menu-grid').innerHTML = '<p style="grid-column:1/-1; text-align:center;">Menu belum tersedia.</p>';
+                    return;
                 }
 
-                if (item.discountPercent && item.discountPercent > 0) {
-                     const discPrice = basePrice * (1 - item.discountPercent / 100);
-                     priceDisplay = `<span style="text-decoration:line-through; font-size:0.8em; color:#999;">${priceDisplay}</span> <span style="color:#d32f2f;">Rp ${discPrice.toLocaleString('id-ID')}</span>`;
-                }
-
-                let thumbHtml = '';
-                if (item.imageUrl && item.imageUrl.trim() !== '') {
-                    thumbHtml = `<img src="${item.imageUrl}" class="search-item-thumb" alt="${item.name}">`;
-                } else {
-                    thumbHtml = `<div class="search-item-thumb">${item.emoji || '🍽️'}</div>`;
-                }
-
-                const div = document.createElement('div');
-                div.className = 'search-item-result';
-                div.onclick = () => selectItemFromSearch(item);
-                div.innerHTML = `
-                    ${thumbHtml}
-                    <div class="search-item-info">
-                        <div class="result-name">${item.name}</div>
-                        <span class="result-category">${item.category || 'Lainnya'}</span>
-                        ${!isAvailable ? '<span style="color:red; font-weight:bold; font-size:0.8rem; margin-left:5px;">HABIS</span>' : ''}
-                    </div>
-                    <div class="result-price">${priceDisplay}</div>
-                `;
-                resultsContainer.appendChild(div);
-            });
-        }
-
-        window.selectItemFromSearch = function(item) {
-            if (item.isAvailable === false) {
-                showNotification("Maaf, item ini sedang habis.", true);
-                return;
+                renderCategories();
+                renderMenu('all'); 
+            } catch (e) {
+                console.error(e);
+                document.getElementById('menu-grid').innerHTML = '<p style="grid-column:1/-1; text-align:center;">Gagal memuat menu (Cek Koneksi).</p>';
             }
-            closeModal('search-modal');
-            prepareAndOpenItemModal(item);
         }
 
-        function prepareAndOpenItemModal(item) {
-            currentModalItem = item;
-            currentModalQuantity = 1;
-            document.getElementById('modal-item-name').textContent = item.name;
-            document.getElementById('modal-item-description').textContent = item.description || '';
-
-            const variantGroup = document.getElementById('modal-variant-group');
-            const variantSelect = document.getElementById('modal-item-variant');
-
-            if (item.priceOptions && item.priceOptions.length > 1) {
-                variantGroup.style.display = 'block';
-                variantSelect.innerHTML = '';
-                item.priceOptions.forEach(option => {
-                    const optionElement = document.createElement('option');
-                    optionElement.value = `${option.name}|${option.price}`;
-                    optionElement.textContent = `${option.name} - Rp ${option.price.toLocaleString('id-ID')}`;
-                    variantSelect.appendChild(optionElement);
-                });
-            } else {
-                variantGroup.style.display = 'none';
-                variantSelect.innerHTML = '';
-            }
-            updateModalPriceAndQuantity();
-            document.getElementById('item-options-modal').classList.add('active');
-        }
-
-        function renderCategoryButtons() {
+        // --- RENDER UI ---
+        function renderCategories() {
+            const cats = ['all', ...new Set(allMenuItems.map(m => m.category || 'Lainnya'))];
             const container = document.getElementById('category-selector');
-            if (!container) return;
-            const categories = [...new Set(allMenuItems.map(item => item.category || 'lainnya'))];
-            categories.sort();
-            container.innerHTML = '';
-
-            categories.forEach(category => {
-                const button = document.createElement('button');
-                button.className = 'category-btn';
-                button.dataset.category = category;
-                button.textContent = category.charAt(0).toUpperCase() + category.slice(1);
-                if (category === 'snacks') button.textContent = '🍟 ' + button.textContent;
-                if (category === 'Food') button.textContent = '🍛 ' + button.textContent;
-                button.onclick = () => switchCategory(category);
-                container.appendChild(button);
-            });
-            updateActiveCategoryButton();
+            container.innerHTML = cats.map(c => 
+                `<button class="category-btn ${c === 'all' ? 'active' : ''}" onclick="filterMenu('${c}')">${c.toUpperCase()}</button>`
+            ).join('');
         }
 
-        function updateActiveCategoryButton() {
-            const categoryButtons = document.querySelectorAll('.category-btn');
-            categoryButtons.forEach(btn => {
-                if (btn.dataset.category === currentCategory) {
-                    btn.classList.add('active');
+        window.filterMenu = (cat) => {
+            currentCategory = cat;
+            document.querySelectorAll('.category-btn').forEach(b => {
+                b.classList.toggle('active', b.textContent === cat.toUpperCase());
+            });
+            renderMenu(cat);
+        }
+
+        function renderMenu(cat) {
+            const grid = document.getElementById('menu-grid');
+            let items = allMenuItems;
+            
+            if (cat !== 'all') {
+                items = allMenuItems.filter(m => (m.category || 'Lainnya') === cat);
+            }
+
+            // Urutkan: Available dulu, lalu sales tertinggi
+            items.sort((a, b) => {
+                if (a.isAvailable === false && b.isAvailable !== false) return 1;
+                if (a.isAvailable !== false && b.isAvailable === false) return -1;
+                return (b.sales || 0) - (a.sales || 0);
+            });
+
+            grid.innerHTML = items.map(item => {
+                const isAvailable = item.isAvailable !== false;
+                const imgUrl = item.imageUrl || ''; 
+                const emoji = item.emoji || '🍽️';
+                
+                // Harga Display
+                let priceDisplay = 0;
+                let isMultiPrice = false;
+                if (item.priceOptions && item.priceOptions.length > 0) {
+                    priceDisplay = Math.min(...item.priceOptions.map(p => p.price));
+                    isMultiPrice = true;
                 } else {
-                    btn.classList.remove('active');
+                    priceDisplay = item.price || 0;
                 }
-            });
+
+                // Diskon Logic
+                let finalPrice = priceDisplay;
+                let strikePrice = '';
+                if (item.discountPercent > 0) {
+                    finalPrice = priceDisplay * (1 - item.discountPercent/100);
+                    strikePrice = `<span class="price-strike">Rp ${priceDisplay.toLocaleString('id-ID')}</span>`;
+                }
+
+                const priceText = `Rp ${finalPrice.toLocaleString('id-ID')}`;
+                
+                return `
+                <div class="menu-card" onclick="${isAvailable ? `openItemModal('${item.id}')` : ''}" style="${!isAvailable ? 'opacity:0.7;' : ''}">
+                    <div class="card-image">
+                        ${imgUrl ? `<img src="${imgUrl}" loading="lazy" alt="${item.name}">` : `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:3rem;">${emoji}</div>`}
+                        <div class="card-badges">
+                            ${item.discountPercent > 0 ? `<span class="badge badge-promo">-${item.discountPercent}%</span>` : ''}
+                            ${(item.sales > 50) ? `<span class="badge badge-bestseller">Terlaris</span>` : ''}
+                        </div>
+                        ${!isAvailable ? `<div class="sold-out-overlay">HABIS</div>` : ''}
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">${item.name}</div>
+                        <div class="card-desc">${item.description || ''}</div>
+                        <div class="card-footer">
+                            <div class="price-wrapper">
+                                ${strikePrice}
+                                <span class="price-final">${isMultiPrice ? 'Mulai ' : ''}${priceText}</span>
+                            </div>
+                            <button class="add-btn" ${!isAvailable ? 'disabled' : ''}>+</button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
         }
 
-        function switchCategory(category) {
-            currentCategory = category;
-            currentMenuItems = allMenuItems.filter(item => (item.category || 'lainnya') === category);
+        // --- MODAL LOGIC ---
+        window.openItemModal = (id) => {
+            modalItem = allMenuItems.find(m => m.id === id);
+            modalQty = 1;
             
-            // Urutkan berdasarkan sales tertinggi
-            currentMenuItems.sort((a, b) => {
-                const salesA = a.sales || 0;
-                const salesB = b.sales || 0;
-                if (salesB !== salesA) {
-                    return salesB - salesA;
-                }
-                return a.name.localeCompare(b.name);
-            });
-
-            renderMenuSlider(); 
-            updateActiveCategoryButton();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function renderMenuSlider() {
-            const slider = document.getElementById('menu-slider');
-            if (!slider) return;
-            slider.innerHTML = '';
-
-            if (currentMenuItems.length === 0) {
-                slider.innerHTML = `<div style="color:#666; text-align:center; padding: 50px; width: 100%; grid-column: 1/-1;">Tidak ada item di kategori ini.</div>`;
-                return;
-            }
-
-            const allSorted = [...allMenuItems].sort((a, b) => (b.sales || 0) - (a.sales || 0));
-            const topItems = allSorted.slice(0, 3).map(item => item.id);
-
-            currentMenuItems.forEach((item, index) => {
-                const isBestSeller = topItems.includes(item.id) && (item.sales > 0);
-                const slide = createMenuSlide(item, index, isBestSeller);
-                slider.appendChild(slide);
-            });
-        }
-
-        function createMenuSlide(item, index, isBestSeller) {
-            const slide = document.createElement('div');
-            slide.className = 'menu-slide';
-
-            const isAvailable = item.isAvailable !== false;
-            let imageHtml = '';
-            if (item.imageUrl && item.imageUrl.trim() !== '') {
-                imageHtml = `<img src="${item.imageUrl}" alt="${item.name}">`;
+            document.getElementById('modal-item-name').innerText = modalItem.name;
+            document.getElementById('modal-item-desc').innerText = modalItem.description || '';
+            
+            const variantContainer = document.getElementById('modal-variant-container');
+            const variantSelect = document.getElementById('modal-item-variant');
+            
+            if (modalItem.priceOptions && modalItem.priceOptions.length > 0) {
+                variantContainer.style.display = 'block';
+                variantSelect.innerHTML = modalItem.priceOptions.map(p => 
+                    `<option value="${p.name}|${p.price}">${p.name} - Rp ${p.price.toLocaleString('id-ID')}</option>`
+                ).join('');
             } else {
-                imageHtml = `<span class="emoji" style="font-size: 4rem;">${item.emoji || '🍽️'}</span>`;
-            }
-
-            const soldOutHtml = !isAvailable ? `<div class="slide-sold-out">HABIS</div>` : '';
-
-            // LOGIKA BADGE DISKON & BEST SELLER
-            let badgeHtml = '';
-            if (isBestSeller) {
-                badgeHtml += `<div class="best-seller-badge">🔥 Paling Laku</div>`;
-            }
-            if (item.discountPercent && item.discountPercent > 0) {
-                badgeHtml += `<div class="discount-badge">${item.discountPercent}% OFF</div>`;
-            }
-
-            // LOGIKA TAMPILAN HARGA (CORET)
-            let priceDisplayHtml = '';
-            let basePrice = 0;
-            let hasMultiplePrices = false;
-
-            if (item.priceOptions && item.priceOptions.length > 0) {
-                basePrice = item.priceOptions[0].price;
-                hasMultiplePrices = item.priceOptions.length > 1;
-            } else if (item.price) {
-                basePrice = item.price;
-            }
-
-            let finalPrice = basePrice;
-            let originalPriceHtml = '';
-
-            // Jika ada diskon di database
-            if (item.discountPercent && item.discountPercent > 0) {
-                finalPrice = basePrice * (1 - item.discountPercent / 100);
-                originalPriceHtml = `<span class="original-price">Rp ${basePrice.toLocaleString('id-ID')}</span>`;
-            }
-
-            const pricePrefix = hasMultiplePrices ? 'Mulai ' : '';
-            
-            priceDisplayHtml = `
-                <div class="slide-price-container">
-                    ${pricePrefix}
-                    ${originalPriceHtml}
-                    <span class="${item.discountPercent ? 'discount-price' : 'slide-price'}">Rp ${finalPrice.toLocaleString('id-ID')}</span>
-                </div>
-            `;
-
-            slide.innerHTML = `
-                <div class="slide-image" style="display:flex; align-items:center; justify-content:center;">
-                    ${badgeHtml}
-                    ${imageHtml}
-                    ${soldOutHtml}
-                </div>
-                <div class="slide-content">
-                    <div class="slide-title">${item.name}</div>
-                    <div class="slide-description">${item.description || ''}</div>
-                    ${priceDisplayHtml}
-                    <button class="order-slide-btn" onclick="showItemOptions(${index})" ${!isAvailable ? 'disabled' : ''}>
-                        ${!isAvailable ? 'HABIS' : 'TAMBAH +'}
-                    </button>
-                </div>
-            `;
-            return slide;
-        }
-
-        window.showItemOptions = function (itemIndex) {
-            const item = currentMenuItems[itemIndex];
-            if (!item) return;
-            prepareAndOpenItemModal(item);
-        }
-
-        window.updateModalQuantity = function (amount) {
-            currentModalQuantity += amount;
-            if (currentModalQuantity < 1) currentModalQuantity = 1;
-            updateModalPriceAndQuantity();
-        }
-
-        window.updateModalPriceAndQuantity = function () {
-            if (!currentModalItem) return;
-            let selectedPrice = 0;
-            const variantSelect = document.getElementById('modal-item-variant');
-            
-            // Ambil harga dasar
-            if (currentModalItem.priceOptions && currentModalItem.priceOptions.length > 1) {
-                selectedPrice = parseFloat(variantSelect.value.split('|')[1]);
-            } else if (currentModalItem.priceOptions && currentModalItem.priceOptions.length === 1) {
-                selectedPrice = currentModalItem.priceOptions[0].price;
-            } else if (currentModalItem.price) {
-                selectedPrice = currentModalItem.price;
+                variantContainer.style.display = 'none';
             }
             
-            // Terapkan Diskon Per Item jika ada
-            if (currentModalItem.discountPercent && currentModalItem.discountPercent > 0) {
-                selectedPrice = selectedPrice * (1 - currentModalItem.discountPercent / 100);
-            }
-
-            document.getElementById('modal-qty-display').textContent = currentModalQuantity;
-            const totalPrice = (selectedPrice || 0) * currentModalQuantity;
-            
-            // Tampilan di Modal
-            let displayText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
-            if (currentModalItem.discountPercent && currentModalItem.discountPercent > 0) {
-                 displayText += ` (Diskon ${currentModalItem.discountPercent}%)`;
-            }
-            document.getElementById('modal-item-price').textContent = displayText;
+            updateModalPrice();
+            document.getElementById('item-modal').classList.add('active');
         }
 
-        window.addItemFromModal = function () {
-            if (!currentModalItem) return;
-            const variantSelect = document.getElementById('modal-item-variant');
-            const itemName = currentModalItem.name;
-            const itemId = currentModalItem.id;
-
-            let selectedVariantName = '';
-            let selectedPrice = 0;
-
-            if (currentModalItem.priceOptions && currentModalItem.priceOptions.length > 1) {
-                const parts = variantSelect.value.split('|');
-                selectedVariantName = parts[0];
-                selectedPrice = parseFloat(parts[1]);
-            } else if (currentModalItem.priceOptions && currentModalItem.priceOptions.length === 1) {
-                selectedVariantName = currentModalItem.priceOptions[0].name;
-                selectedPrice = currentModalItem.priceOptions[0].price;
-                if (selectedVariantName.toLowerCase() === 'default' || selectedVariantName.toLowerCase() === 'reguler') selectedVariantName = '';
-            } else if (currentModalItem.price) {
-                selectedPrice = currentModalItem.price;
+        window.updateModalPrice = () => {
+            let price = 0;
+            if (modalItem.priceOptions && modalItem.priceOptions.length > 0) {
+                const val = document.getElementById('modal-item-variant').value;
+                price = parseInt(val.split('|')[1]);
+            } else {
+                price = modalItem.price || 0;
             }
 
-            // HITUNG HARGA SETELAH DISKON ITEM (JIKA ADA)
-            let finalItemPrice = selectedPrice;
-            let appliedItemDiscount = 0;
-            if (currentModalItem.discountPercent && currentModalItem.discountPercent > 0) {
-                finalItemPrice = selectedPrice * (1 - currentModalItem.discountPercent / 100);
-                appliedItemDiscount = currentModalItem.discountPercent;
+            if (modalItem.discountPercent > 0) {
+                price = price * (1 - modalItem.discountPercent/100);
             }
 
-            const itemKey = selectedVariantName ? `${itemName} (${selectedVariantName})` : itemName;
-            const existingItem = cart.find(cartItem => cartItem.key === itemKey);
+            document.getElementById('modal-qty').innerText = modalQty;
+            document.getElementById('modal-total-price').innerText = `Rp ${(price * modalQty).toLocaleString('id-ID')}`;
+        }
 
-            if (existingItem) {
-                existingItem.quantity += currentModalQuantity;
+        window.adjustModalQty = (delta) => {
+            modalQty += delta;
+            if (modalQty < 1) modalQty = 1;
+            updateModalPrice();
+        }
+
+        window.addToCartFromModal = () => {
+            let price = 0;
+            let variantName = '';
+
+            if (modalItem.priceOptions && modalItem.priceOptions.length > 0) {
+                const val = document.getElementById('modal-item-variant').value;
+                const parts = val.split('|');
+                variantName = parts[0];
+                price = parseInt(parts[1]);
+            } else {
+                price = modalItem.price || 0;
+            }
+
+            // Hitung diskon item
+            let finalPrice = price;
+            if (modalItem.discountPercent > 0) {
+                finalPrice = price * (1 - modalItem.discountPercent/100);
+            }
+
+            // Cek duplikat di cart
+            const key = modalItem.id + variantName;
+            const exist = cart.find(c => c.key === key);
+            
+            if (exist) {
+                exist.qty += modalQty;
             } else {
                 cart.push({
-                    id: itemId, 
-                    key: itemKey, 
-                    name: itemName, 
-                    variant: selectedVariantName, 
-                    price: finalItemPrice, // Harga yang masuk cart sudah harga diskon
-                    originalPrice: selectedPrice, // Simpan harga asli untuk data
-                    discountPercent: appliedItemDiscount,
-                    quantity: currentModalQuantity
+                    key: key,
+                    id: modalItem.id,
+                    name: modalItem.name,
+                    variant: variantName,
+                    price: finalPrice,
+                    qty: modalQty
                 });
             }
-            updateCartDisplay();
-            closeModal('item-options-modal');
-            showNotification(`${currentModalQuantity}x ${itemKey} ditambahkan!`);
+
+            showNotif('Masuk Keranjang');
+            closeModal('item-modal');
+            updateCartUI();
         }
 
-        window.toggleCart = function () { document.getElementById('cart-sidebar').classList.toggle('open'); }
+        function updateCartUI() {
+            const floatBtn = document.getElementById('cart-float');
+            const totalQty = cart.reduce((a, b) => a + b.qty, 0);
+            const totalPrice = cart.reduce((a, b) => a + (b.price * b.qty), 0);
 
-        function updateCartDisplay() {
-            const cartItemsContainer = document.getElementById('cart-items');
-            const cartCount = document.getElementById('cart-count');
-            const cartSubtotal = document.getElementById('cart-subtotal');
-            const cartTotal = document.getElementById('cart-total');
-            const checkoutBtn = document.querySelector('.cart-total .checkout-btn');
-
-            if (!cartItemsContainer) return;
-            cartItemsContainer.innerHTML = '';
-            let subtotal = 0;
-            let itemCount = 0;
-
-            if (cart.length === 0) {
-                cartItemsContainer.innerHTML = `<div style="text-align: center; color: #666; padding: 40px 20px;"><div style="font-size: 3rem; margin-bottom: 15px;">🛒</div><p>Keranjang kosong</p></div>`;
-                checkoutBtn.disabled = true;
-                cartSubtotal.textContent = "Rp 0";
-                cartTotal.textContent = "Rp 0";
+            if (totalQty > 0) {
+                floatBtn.classList.add('show');
+                document.querySelector('.cart-total-qty').innerText = `${totalQty} Item`;
+                document.querySelector('.cart-total-price').innerText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
             } else {
-                cart.forEach((item, index) => {
-                    const itemTotal = item.price * item.quantity;
-                    subtotal += itemTotal;
-                    itemCount += item.quantity;
-                    
-                    // Cek jika ada diskon item untuk visualisasi
-                    let priceHtml = `Rp ${itemTotal.toLocaleString('id-ID')}`;
-                    if(item.discountPercent > 0) {
-                         // priceHtml += ` <small style="color:red">(-${item.discountPercent}%)</small>`;
-                    }
-
-                    cartItemsContainer.innerHTML += `
-                        <div class="cart-item">
-                            <div class="cart-item-info">
-                                <div class="cart-item-name">${item.name}</div>
-                                ${item.variant ? `<div class="cart-item-variant">${item.variant}</div>` : ''}
-                                <div class="cart-item-details">
-                                    ${item.quantity} x Rp ${item.price.toLocaleString('id-ID')}
-                                    ${item.discountPercent > 0 ? '<span style="color:#d32f2f; font-size:0.8em; margin-left:5px;">(Promo)</span>' : ''}
-                                </div>
-                            </div>
-                            <div class="cart-item-actions">
-                                <div class="cart-item-price">${priceHtml}</div>
-                                <button class="remove-item" onclick="removeFromCart(${index})">Hapus</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                checkoutBtn.disabled = false;
-                cartSubtotal.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
-                
-                // Total Cart View belum memperhitungkan promo code (promo code di checkout)
-                cartTotal.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
-            }
-            cartCount.textContent = itemCount;
-        }
-
-        window.removeFromCart = function (index) {
-            const item = cart[index];
-            if (item) {
-                cart.splice(index, 1);
-                updateCartDisplay();
+                floatBtn.classList.remove('show');
             }
         }
 
-        window.resetCart = function () {
-            cart = []; 
-            appliedPromoCode = null; // Reset Promo
-            appliedDiscountPercent = 0;
-            document.getElementById('promo-code').value = '';
-            document.getElementById('promo-message').textContent = '';
+        // --- 4. Cek Meja (Sinkronisasi Live) ---
+        window.openCheckout = async () => {
+            const list = document.getElementById('cart-list');
+            list.innerHTML = cart.map((c, idx) => `
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:10px 0;">
+                    <div>
+                        <div style="font-weight:bold;">${c.name} ${c.variant ? `(${c.variant})` : ''}</div>
+                        <div style="font-size:0.9rem; color:#666;">${c.qty} x Rp ${c.price.toLocaleString('id-ID')}</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-weight:bold;">Rp ${(c.price * c.qty).toLocaleString('id-ID')}</span>
+                        <button onclick="removeItem(${idx})" style="background:#d32f2f; color:white; border:none; width:24px; height:24px; border-radius:4px;">x</button>
+                    </div>
+                </div>
+            `).join('');
             
-            updateCartDisplay(); 
-            document.getElementById('checkout-form').reset();
-            
-            const btn = document.getElementById('confirm-payment-btn');
-            btn.style.display = 'block';
-            btn.disabled = false;
-            btn.textContent = 'Sudah Bayar? Proses Pesanan';
-        }
-
-        window.showCheckout = function () {
-            if (cart.length === 0) { showNotification('Keranjang kosong!', true); return; }
+            calcTotalCheckout();
             document.getElementById('checkout-modal').classList.add('active');
+            
+            // PANGGIL FUNGSI CEK MEJA DI SINI
+            await updateTableAvailability();
         }
 
-        // --- LOGIKA KODE PROMO (Fitur Baru) ---
-        window.checkPromo = function() {
-            const codeInput = document.getElementById('promo-code');
-            const messageEl = document.getElementById('promo-message');
-            const code = codeInput.value.toUpperCase().trim();
-            
-            if (!code) {
-                messageEl.textContent = "Masukkan kode promo.";
-                messageEl.style.color = "red";
-                return;
-            }
+        // Fungsi Sinkronisasi Meja (Sama dengan file sebelumnya)
+        async function updateTableAvailability() {
+            const selectEl = document.getElementById('table-no');
+            // Reset dulu ke kondisi awal
+            Array.from(selectEl.options).forEach(opt => {
+                if(opt.value) { // Skip default option
+                    opt.disabled = false;
+                    opt.textContent = opt.value; 
+                    opt.classList.remove('occupied-table');
+                }
+            });
 
-            const today = new Date().getDay(); // 5 = Jumat
+            try {
+                // Fetch data dari koleksi 'tables' (sumber Floor Monitor)
+                const snapshot = await getDocs(collection(db, "tables"));
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    
+                    // Cek jika statusnya BUKAN 'empty'
+                    if (data.status && data.status !== 'empty') {
+                        let matchValue = null;
+                        
+                        // Logika pencocokan (sesuaikan dengan value option HTML)
+                        if (data.tableNumber && data.tableNumber <= 33) {
+                            matchValue = `Meja ${data.tableNumber}`;
+                        } else if (data.name) {
+                             if (data.name.includes('VIP')) matchValue = "Meja VIP Payboss";
+                             else if (data.name.includes('Karaoke 1')) matchValue = "Karaoke Room 1";
+                             else if (data.name.includes('Karaoke 2')) matchValue = "Karaoke Room 2";
+                             else if (data.name.includes('Karaoke 3')) matchValue = "Karaoke Room 3";
+                        }
+
+                        if (matchValue) {
+                            const option = Array.from(selectEl.options).find(opt => opt.value === matchValue);
+                            if (option) {
+                                const statusText = data.status === 'reserved' ? '(Booked)' : '(Terisi)';
+                                option.textContent = `${option.value} ${statusText}`;
+                                option.classList.add('occupied-table');
+                                option.disabled = true; // Nonaktifkan agar tidak bisa dipilih
+                            }
+                        }
+                    }
+                });
+
+            } catch (error) {
+                console.error("Gagal sinkronisasi meja:", error);
+            }
+        }
+
+        window.removeItem = (idx) => {
+            cart.splice(idx, 1);
+            if (cart.length === 0) closeModal('checkout-modal');
+            else openCheckout(); // Re-render
+            updateCartUI();
+        }
+
+        window.calcTotalCheckout = () => {
+            const sub = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+            const discVal = sub * activeDiscount;
+            const total = sub - discVal;
+
+            document.getElementById('checkout-subtotal').innerText = `Rp ${sub.toLocaleString('id-ID')}`;
+            document.getElementById('checkout-total').innerText = `Rp ${total.toLocaleString('id-ID')}`;
+            
+            if(activeDiscount > 0) {
+                document.getElementById('checkout-discount-row').style.display = 'flex';
+                document.getElementById('checkout-discount').innerText = `-Rp ${discVal.toLocaleString('id-ID')}`;
+            } else {
+                document.getElementById('checkout-discount-row').style.display = 'none';
+            }
+        }
+
+        window.applyPromo = () => {
+            const code = document.getElementById('promo-code').value.toUpperCase().trim();
+            const msg = document.getElementById('promo-msg');
+            const day = new Date().getDay();
 
             if (code === 'PAYBOSS10') {
-                appliedPromoCode = 'PAYBOSS10';
-                appliedDiscountPercent = 0.10; // 10%
-                messageEl.textContent = "Kode Valid! Diskon 10% diterapkan pada total.";
-                messageEl.style.color = "green";
-            } else if (code === 'JUMATBERKAH') {
-                if (today === 5) { // Hanya hari Jumat
-                    appliedPromoCode = 'JUMATBERKAH';
-                    appliedDiscountPercent = 0.20; // 20%
-                    messageEl.textContent = "Alhamdulillah! Diskon Jumat Berkah 20% diterapkan.";
-                    messageEl.style.color = "green";
-                } else {
-                    appliedPromoCode = null;
-                    appliedDiscountPercent = 0;
-                    messageEl.textContent = "Kode ini hanya berlaku hari Jumat.";
-                    messageEl.style.color = "red";
-                }
+                activeDiscount = 0.1;
+                msg.innerText = 'Diskon 10% dipakai!'; msg.style.color = 'green';
+            } else if (code === 'JUMATBERKAH' && day === 5) {
+                activeDiscount = 0.2;
+                msg.innerText = 'Jumat Berkah 20% dipakai!'; msg.style.color = 'green';
             } else {
-                appliedPromoCode = null;
-                appliedDiscountPercent = 0;
-                messageEl.textContent = "Kode promo tidak ditemukan.";
-                messageEl.style.color = "red";
+                activeDiscount = 0;
+                msg.innerText = 'Kode tidak valid/berlaku.'; msg.style.color = 'red';
             }
+            calcTotalCheckout();
         }
 
-        window.processCheckout = function (event) {
-            event.preventDefault();
-            
-            // Hitung Angka Final
-            let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            let discountAmount = 0;
-            
-            if (appliedDiscountPercent > 0) {
-                discountAmount = subtotal * appliedDiscountPercent;
-            }
-            
-            let finalTotal = subtotal - discountAmount;
-
-            // Render ke Modal Payment
-            const paymentItems = document.getElementById('payment-items');
-            paymentItems.innerHTML = '';
-            cart.forEach(item => {
-                paymentItems.innerHTML += `<div class="receipt-line"><span>${item.key} x${item.quantity}</span><span>Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</span></div>`;
-            });
-            
-            document.getElementById('payment-subtotal').textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
-            
-            // Tampilkan baris diskon jika ada
-            const discountRow = document.getElementById('payment-discount-row');
-            if (discountAmount > 0) {
-                discountRow.style.display = 'flex';
-                document.getElementById('payment-discount-name').textContent = appliedPromoCode;
-                document.getElementById('payment-discount-amount').textContent = `-Rp ${discountAmount.toLocaleString('id-ID')}`;
-            } else {
-                discountRow.style.display = 'none';
-            }
-
-            document.getElementById('payment-total').textContent = `Rp ${finalTotal.toLocaleString('id-ID')}`;
-            
-            const confirmBtn = document.getElementById('confirm-payment-btn');
-            confirmBtn.disabled = false;
-            confirmBtn.textContent = 'Sudah Bayar? Proses Pesanan';
+        window.showPayment = () => {
+            const name = document.getElementById('cust-name').value;
+            const table = document.getElementById('table-no').value;
+            if(!name || !table) { showNotif('Isi Nama & No Meja!', true); return; }
             
             closeModal('checkout-modal');
             document.getElementById('payment-modal').classList.add('active');
         }
 
-        window.confirmPayment = async function () {
-            const confirmBtn = document.getElementById('confirm-payment-btn');
-            confirmBtn.disabled = true; confirmBtn.textContent = 'Memproses...';
+        window.selectPayment = (type) => {
+            selectedPayMethod = type;
+            document.getElementById('pay-qris').style.borderColor = type === 'QRIS' ? '#8B4513' : '#ddd';
+            document.getElementById('pay-cash').style.borderColor = type === 'CASH' ? '#8B4513' : '#ddd';
+            document.getElementById('pay-qris').style.backgroundColor = type === 'QRIS' ? '#f0f0f0' : 'white';
+            document.getElementById('pay-cash').style.backgroundColor = type === 'CASH' ? '#f0f0f0' : 'white';
             
-            const customerName = document.getElementById('customer-name').value;
-            const tableNumber = document.getElementById('table-number').value;
-            
-            // Hitung ulang untuk data yang disimpan
-            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            let discountAmount = 0;
-            if (appliedDiscountPercent > 0) {
-                discountAmount = subtotal * appliedDiscountPercent;
-            }
-            const finalTotal = subtotal - discountAmount;
-            
-            const baseOrderData = {
-                customer: customerName, table: tableNumber,
-                items: cart.map(item => ({ 
-                    name: item.name, 
-                    variant: item.variant || null, 
-                    qty: item.quantity, 
-                    price: item.price,
-                    note: item.discountPercent > 0 ? `Promo Item ${item.discountPercent}%` : ''
-                })),
-                subtotal: subtotal,
-                discount: discountAmount,
-                promoCode: appliedPromoCode || '',
-                tax: 0, 
-                total: finalTotal,
-                status: 'pending', paymentMethod: 'QRIS', createdAt: serverTimestamp()
+            document.getElementById('qris-image').style.display = type === 'QRIS' ? 'block' : 'none';
+            document.getElementById('btn-confirm-pay').disabled = false;
+        }
+
+        window.submitOrder = async () => {
+            const btn = document.getElementById('btn-confirm-pay');
+            btn.innerText = 'Memproses...'; btn.disabled = true;
+
+            const sub = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+            const discVal = sub * activeDiscount;
+            const total = sub - discVal;
+
+            const orderData = {
+                customer: document.getElementById('cust-name').value,
+                table: document.getElementById('table-no').value,
+                items: cart,
+                subtotal: sub,
+                discount: discVal,
+                total: total,
+                paymentMethod: selectedPayMethod,
+                status: 'pending',
+                createdAt: serverTimestamp()
             };
 
             try {
-                const counterRef = doc(db, "counters", "dailyOrder");
-                const newQueueNumber = await runTransaction(db, async (transaction) => {
-                    const counterDoc = await transaction.get(counterRef);
+                // 1. Ambil No Antrian (Transaction)
+                const counterRef = doc(db, 'counters', 'dailyOrder');
+                const queueNo = await runTransaction(db, async (t) => {
+                    const docSnap = await t.get(counterRef);
                     const today = new Date().toISOString().split('T')[0];
-                    let newNumber = 1;
-                    if (counterDoc.exists() && counterDoc.data().lastResetDate === today) {
-                        newNumber = counterDoc.data().currentNumber + 1;
-                        transaction.update(counterRef, { currentNumber: newNumber });
+                    let next = 1;
+                    
+                    if(docSnap.exists() && docSnap.data().lastResetDate === today) {
+                        next = docSnap.data().currentNumber + 1;
+                        t.update(counterRef, { currentNumber: next });
                     } else {
-                        transaction.set(counterRef, { currentNumber: 1, lastResetDate: today });
+                        t.set(counterRef, { currentNumber: 1, lastResetDate: today });
                     }
-                    return newNumber;
+                    return next;
                 });
 
-                const finalOrderData = { ...baseOrderData, queueNumber: newQueueNumber };
-                await addDoc(collection(db, "orders"), finalOrderData);
-                
-                // Populate Success Modal
-                document.getElementById('success-queue-number').textContent = `#${newQueueNumber}`;
-                document.getElementById('success-customer').textContent = customerName;
-                document.getElementById('success-table').textContent = tableNumber;
-                
-                const successItemsContainer = document.getElementById('success-receipt-items');
-                successItemsContainer.innerHTML = '';
-                cart.forEach(item => {
-                    successItemsContainer.innerHTML += `<div class="receipt-line" style="font-size: 0.9rem;"><span>${item.quantity} x ${item.key}</span><span>Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</span></div>`;
-                });
-                
-                document.getElementById('success-subtotal').textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
-                
-                const successDiscountRow = document.getElementById('success-discount-row');
-                if (discountAmount > 0) {
-                    successDiscountRow.style.display = 'flex';
-                    document.getElementById('success-discount-val').textContent = `-Rp ${discountAmount.toLocaleString('id-ID')}`;
-                } else {
-                    successDiscountRow.style.display = 'none';
-                }
+                // 2. Simpan Order
+                await addDoc(collection(db, 'orders'), { ...orderData, queueNumber: queueNo });
 
-                document.getElementById('success-total').textContent = `Rp ${finalTotal.toLocaleString('id-ID')}`;
-                
+                // 3. Reset UI
+                document.getElementById('success-queue').innerText = `#${queueNo}`;
                 closeModal('payment-modal');
                 document.getElementById('success-modal').classList.add('active');
-                showNotification('Pesanan berhasil dikirim!');
-            } catch (error) {
-                console.error(error);
-                showNotification('Gagal mengirim pesanan.', true);
-                confirmBtn.disabled = false; confirmBtn.textContent = 'Sudah Bayar? Proses Pesanan';
+                
+                // Clear state
+                cart = []; activeDiscount = 0; updateCartUI();
+
+            } catch (e) {
+                console.error(e);
+                showNotif('Gagal kirim order', true);
+                btn.innerText = 'Coba Lagi'; btn.disabled = false;
             }
         }
 
-        window.sendWhatsAppConfirmation = function() {
-            const customer = document.getElementById('success-customer').textContent;
-            const table = document.getElementById('success-table').textContent;
-            const queueNumber = document.getElementById('success-queue-number').textContent;
+        window.sendWA = () => {
+            const name = document.getElementById('cust-name').value;
+            const table = document.getElementById('table-no').value;
+            const queue = document.getElementById('success-queue').innerText;
             
-            // Ambil nilai mentah dari elemen HTML
-            const totalText = document.getElementById('success-total').textContent;
-            const subtotalText = document.getElementById('success-subtotal').textContent;
+            let msg = `Halo Payboss, Order Baru!\n`;
+            msg += `Antrian: ${queue}\nNama: ${name}\nMeja: ${table}\n\n`;
             
-            // Cek apakah ada diskon
-            const discountRow = document.getElementById('success-discount-row');
-            const hasDiscount = discountRow.style.display !== 'none';
-            const discountText = document.getElementById('success-discount-val').textContent;
+            // Re-construct cart items from memory or temp variable if needed, 
+            // but since cart is cleared, we assume user sends proof immediately.
+            // Better UX: keep temp cart for WA msg. 
+            // For simplicity here:
+            msg += `Mohon proses pesanan saya (Bukti Transfer Terlampir).`;
 
-            let message = `Halo Payboss Cafe, saya sudah melakukan pembayaran via QRIS.\nMohon diproses.\n\n`;
-            message += `*Detail Pesanan:*\n`;
-            message += `Nama: ${customer}\n`;
-            message += `Meja: ${table}\n`;
-            message += `No. Antrian: ${queueNumber}\n`;
-            message += `--------------------------------\n`;
-            
-            cart.forEach(item => {
-                message += `${item.quantity}x ${item.key} - Rp ${(item.price * item.quantity).toLocaleString('id-ID')}\n`;
-            });
-            
-            message += `--------------------------------\n`;
-            
-            if (hasDiscount) {
-                message += `Subtotal: ${subtotalText}\n`;
-                message += `Diskon: ${discountText}\n`;
-            }
-            
-            message += `*TOTAL BAYAR: ${totalText}*\\n\\n`;
-            message += `_Berikut bukti pembayaran saya (foto terlampir):_`;
-
-            const phoneNumber = "6285124068881";
-            const waUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            
-            window.open(waUrl, '_blank');
+            window.open(`https://wa.me/6285124068881?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        window.closeModal = function (modalId) {
-            document.getElementById(modalId).classList.remove('active');
-            if (modalId === 'item-options-modal') { currentModalItem = null; currentModalQuantity = 1; }
-            if (modalId === 'search-modal') { document.getElementById('search-input').value = ''; document.getElementById('search-results').innerHTML = ''; }
+        window.closeModal = (id) => document.getElementById(id).classList.remove('active');
+        window.openSearch = () => {
+            document.getElementById('search-modal').classList.add('active');
+            document.getElementById('search-input').focus();
         }
+        
+        // Search Logic (Client Side Filtering - Hemat Kuota)
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            const res = allMenuItems.filter(m => m.name.toLowerCase().includes(val));
+            const div = document.getElementById('search-results');
+            
+            if(val.length < 2) { div.innerHTML = ''; return; }
+            
+            div.innerHTML = res.map(item => `
+                <div class="search-result-item" onclick="openItemModal('${item.id}'); closeModal('search-modal');">
+                    <div style="font-weight:bold;">${item.name}</div>
+                    <div style="color:#8B4513;">Rp ${(item.price || 0).toLocaleString()}</div>
+                </div>
+            `).join('');
+        });
 
-        function showNotification(message, isError = false) {
-            const el = document.createElement('div');
-            el.className = 'notification'; el.textContent = message;
-            if (isError) el.style.backgroundColor = '#A52A2A';
-            document.body.appendChild(el);
-            setTimeout(() => el.classList.add('show'), 10);
-            setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 500); }, 3000);
+        function showNotif(msg, err=false) {
+            const n = document.getElementById('notification');
+            n.innerText = msg;
+            n.style.background = err ? '#d32f2f' : '#333';
+            n.classList.add('show');
+            setTimeout(() => n.classList.remove('show'), 3000);
         }
     </script>
 </body>
