@@ -401,9 +401,16 @@
             <div style="font-size:4rem; margin-bottom: 10px;">🎉</div>
             <h3 style="margin:0 0 10px 0;">Pesanan Diterima!</h3>
             <div style="background: #f0f4c3; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-                No Antrian: <strong id="success-queue" style="font-size:1.5rem; color:#8B4513;">#0</strong>
+                No Antrian: <strong id="success-queue" style="font-size:1.5rem; color:#8B4513;">...</strong>
             </div>
             
+            <!-- FALLBACK MESSAGE JIKA KUOTA HABIS -->
+            <div id="quota-warning" style="display:none; color: #d32f2f; font-size: 0.9rem; margin-bottom: 15px;">
+                <strong>⚠️ Sistem Database Penuh</strong><br>
+                Pesanan Anda GAGAL disimpan otomatis.<br>
+                <strong>WAJIB Kirim Bukti via WhatsApp di bawah ini agar pesanan diproses!</strong>
+            </div>
+
             <p style="font-size: 0.95rem; color: #555; margin-bottom: 20px;">
                 Langkah Terakhir: <strong>Kirim Bukti Pembayaran</strong> ke WhatsApp Admin agar pesanan segera diproses.
             </p>
@@ -752,6 +759,7 @@
             const customer = document.getElementById('cust-name').value;
             const table = document.getElementById('table-no').value;
 
+            // PREPARE ORDER DATA (UNTUK DB & STRUK)
             const orderData = {
                 customer: customer,
                 table: table,
@@ -763,9 +771,21 @@
                 status: 'pending',
                 createdAt: serverTimestamp()
             };
+            
+            // PREPARE LOCAL DATA (UNTUK WA, JIKA DB GAGAL)
+            lastOrderDetails = {
+                queue: '...', // Default jika gagal ambil nomor
+                customer: customer,
+                table: table,
+                items: [...cart], 
+                subtotal: sub,
+                discount: discVal,
+                total: total,
+                time: new Date().toLocaleString('id-ID')
+            };
 
             try {
-                // 1. Ambil No Antrian (Transaction)
+                // 1. Ambil No Antrian
                 const counterRef = doc(db, 'counters', 'dailyOrder');
                 const queueNo = await runTransaction(db, async (t) => {
                     const docSnap = await t.get(counterRef);
@@ -781,33 +801,39 @@
                     return next;
                 });
 
+                // Update queue number di local data & DB data
+                orderData.queueNumber = queueNo;
+                lastOrderDetails.queue = queueNo;
+
                 // 2. Simpan Order
-                await addDoc(collection(db, 'orders'), { ...orderData, queueNumber: queueNo });
+                await addDoc(collection(db, 'orders'), orderData);
 
-                // 3. Simpan data untuk WA Receipt
-                lastOrderDetails = {
-                    queue: queueNo,
-                    customer: customer,
-                    table: table,
-                    items: [...cart], // clone array
-                    subtotal: sub,
-                    discount: discVal,
-                    total: total,
-                    time: new Date().toLocaleString('id-ID')
-                };
-
-                // 4. Reset UI
+                // 3. Sukses Normal
                 document.getElementById('success-queue').innerText = `#${queueNo}`;
+                document.getElementById('quota-warning').style.display = 'none'; // Sembunyikan warning
+                
                 closeModal('payment-modal');
                 document.getElementById('success-modal').classList.add('active');
                 
-                // Clear state
                 cart = []; activeDiscount = 0; updateCartUI();
 
             } catch (e) {
-                console.error(e);
-                showNotif('Gagal kirim order', true);
-                btn.innerText = 'Coba Lagi'; btn.disabled = false;
+                console.error("Error submit:", e);
+                
+                // --- FALLBACK MODE JIKA QUOTA HABIS ---
+                if (e.code === 'resource-exhausted') {
+                    // Tampilkan modal sukses TAPI dengan peringatan
+                    document.getElementById('success-queue').innerText = 'OFFLINE';
+                    document.getElementById('quota-warning').style.display = 'block'; // Tampilkan warning
+                    
+                    closeModal('payment-modal');
+                    document.getElementById('success-modal').classList.add('active');
+                    
+                    cart = []; activeDiscount = 0; updateCartUI();
+                } else {
+                    showNotif('Gagal kirim order. Coba lagi.', true);
+                    btn.innerText = 'Coba Lagi'; btn.disabled = false;
+                }
             }
         }
 
